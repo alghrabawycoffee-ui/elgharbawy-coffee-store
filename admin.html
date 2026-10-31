@@ -7,219 +7,75 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #8A3324; --primary-dark: #5A1F14; --secondary: #D4A373;
-            --sidebar-bg: #2C1E16; --bg-main: #F4F6F9; --text-dark: #333;
-            --white: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        :root { --primary: #8A3324; --primary-dark: #5A1F14; --secondary: #D4A373; --sidebar-bg: #2C1E16; --bg-main: #F4F6F9; --text-dark: #333; --white: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { display: flex; height: 100vh; background-color: var(--bg-main); }
-
-        /* القائمة الجانبية */
         .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; }
         .sidebar-logo { padding: 25px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sidebar-logo h2 { color: var(--secondary); font-size: 1.8rem; font-weight: 900; }
-        
+        .sidebar-logo img { height: 60px; object-fit: contain; background: white; padding: 5px; border-radius: 10px; width: 100%;}
         .sidebar-menu { flex: 1; padding: 20px 0; }
-        .sidebar-menu a {
-            display: flex; align-items: center; gap: 15px; padding: 15px 25px;
-            color: #aaa; text-decoration: none; font-weight: 600; transition: 0.3s;
-        }
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background: var(--primary); color: white; border-right: 4px solid var(--secondary);
-        }
+        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 15px 25px; color: #aaa; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--primary); color: white; border-right: 4px solid var(--secondary); }
         .sidebar-menu i { width: 20px; text-align: center; font-size: 1.1rem; }
-
-        /* المحتوى الرئيسي */
         .main-content { flex: 1; overflow-y: auto; }
-        
-        /* الهيدر */
-        .admin-header {
-            background: var(--white); padding: 20px 30px; display: flex;
-            justify-content: space-between; align-items: center; box-shadow: var(--shadow);
-        }
+        .admin-header { background: var(--white); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
         .admin-header h1 { font-size: 1.5rem; color: var(--text-dark); }
         .admin-profile { display: flex; align-items: center; gap: 10px; font-weight: 700; }
         .admin-profile img { width: 40px; height: 40px; border-radius: 50%; background: #ddd; }
-
-        /* منطقة العمل */
         .dashboard-wrapper { padding: 30px; }
-        
-        /* كروت الإحصائيات */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card {
-            background: var(--white); padding: 25px; border-radius: 12px; box-shadow: var(--shadow);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .stat-card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; }
         .stat-info h3 { font-size: 0.9rem; color: #888; margin-bottom: 10px; }
         .stat-info p { font-size: 1.8rem; font-weight: 900; color: var(--text-dark); }
         .stat-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; }
-        .icon-sales { background: #e8f5e9; color: #2e7d32; }
-        .icon-orders { background: #fff3e0; color: #ef6c00; }
-        .icon-products { background: #e3f2fd; color: #1565c0; }
-        .icon-users { background: #fce4ec; color: #c2185b; }
-
-        /* الجداول */
+        .icon-sales { background: #e8f5e9; color: #2e7d32; } .icon-orders { background: #fff3e0; color: #ef6c00; } .icon-products { background: #e3f2fd; color: #1565c0; } .icon-users { background: #fce4ec; color: #c2185b; }
         .recent-orders { background: var(--white); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
         .table-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .table-header h2 { font-size: 1.2rem; }
-        .btn-view-all { color: var(--primary); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
-        
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px 20px; text-align: right; border-bottom: 1px solid #eee; }
         th { background: #fafafa; color: #777; font-weight: 700; font-size: 0.9rem; }
         td { font-size: 0.95rem; font-weight: 600; }
-        
         .status { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; }
-        .status.completed { background: #e8f5e9; color: #2e7d32; }
-        .status.pending { background: #fff3e0; color: #ef6c00; }
-        .status.shipped { background: #e3f2fd; color: #1565c0; }
-
+        .status.completed { background: #e8f5e9; color: #2e7d32; } .status.pending { background: #fff3e0; color: #ef6c00; } .status.shipped { background: #e3f2fd; color: #1565c0; }
         .action-btn { background: none; border: none; color: var(--text-dark); cursor: pointer; font-size: 1.1rem; margin: 0 5px; transition: 0.3s; }
         .action-btn:hover { color: var(--primary); }
-
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; }
-            .sidebar-logo h2, .sidebar-menu a span { display: none; }
-            .sidebar-menu a { justify-content: center; padding: 15px; border-right: none; border-bottom: 3px solid transparent;}
-            .sidebar-menu a:hover, .sidebar-menu a.active { border-bottom: 3px solid var(--secondary); border-right: none; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (max-width: 992px) { .sidebar { width: 80px; } .sidebar-logo img, .sidebar-menu a span { display: none; } .sidebar-menu a { justify-content: center; padding: 15px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
-
-    <!-- القائمة الجانبية -->
     <div class="sidebar">
-        <div class="sidebar-logo">
-            <h2>الغرباوي</h2>
-        </div>
+        <div class="sidebar-logo"><img src="logo.jpg" alt="الغرباوي"></div>
         <div class="sidebar-menu">
             <a href="#" class="active"><i class="fas fa-chart-pie"></i> <span>لوحة القيادة</span></a>
             <a href="#"><i class="fas fa-box-open"></i> <span>المنتجات</span></a>
             <a href="#"><i class="fas fa-shopping-cart"></i> <span>الطلبات</span></a>
             <a href="#"><i class="fas fa-users"></i> <span>العملاء</span></a>
-            <a href="#"><i class="fas fa-ticket-alt"></i> <span>كوبونات الخصم</span></a>
-            <a href="#"><i class="fas fa-cog"></i> <span>الإعدادات</span></a>
             <a href="index.html" style="margin-top: auto; color: #ff8a65;"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></a>
         </div>
     </div>
-
-    <!-- المحتوى الرئيسي -->
     <div class="main-content">
-        
-        <!-- الهيدر -->
         <div class="admin-header">
             <h1>مرحباً بك، أحمد الغرباوي 👋</h1>
-            <div class="admin-profile">
-                <span>أحمد</span>
-                <img src="https://ui-avatars.com/api/?name=Ahmed&background=8A3324&color=fff" alt="Admin">
-            </div>
+            <div class="admin-profile"><span>أحمد</span><img src="https://ui-avatars.com/api/?name=Ahmed&background=8A3324&color=fff" alt="Admin"></div>
         </div>
-
-        <!-- منطقة العمل -->
         <div class="dashboard-wrapper">
-            
-            <!-- الإحصائيات -->
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>إجمالي المبيعات</h3>
-                        <p>45,200 ج.م</p>
-                    </div>
-                    <div class="stat-icon icon-sales"><i class="fas fa-wallet"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>الطلبات الجديدة</h3>
-                        <p>18</p>
-                    </div>
-                    <div class="stat-icon icon-orders"><i class="fas fa-shopping-bag"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>المنتجات</h3>
-                        <p>64</p>
-                    </div>
-                    <div class="stat-icon icon-products"><i class="fas fa-box"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>العملاء</h3>
-                        <p>1,240</p>
-                    </div>
-                    <div class="stat-icon icon-users"><i class="fas fa-users"></i></div>
-                </div>
+                <div class="stat-card"><div class="stat-info"><h3>إجمالي المبيعات</h3><p>45,200 ج.م</p></div><div class="stat-icon icon-sales"><i class="fas fa-wallet"></i></div></div>
+                <div class="stat-card"><div class="stat-info"><h3>الطلبات الجديدة</h3><p>18</p></div><div class="stat-icon icon-orders"><i class="fas fa-shopping-bag"></i></div></div>
+                <div class="stat-card"><div class="stat-info"><h3>المنتجات</h3><p>64</p></div><div class="stat-icon icon-products"><i class="fas fa-box"></i></div></div>
+                <div class="stat-card"><div class="stat-info"><h3>العملاء</h3><p>1,240</p></div><div class="stat-icon icon-users"><i class="fas fa-users"></i></div></div>
             </div>
-
-            <!-- جدول الطلبات -->
             <div class="recent-orders">
-                <div class="table-header">
-                    <h2>أحدث الطلبات</h2>
-                    <a href="#" class="btn-view-all">عرض الكل</a>
-                </div>
+                <div class="table-header"><h2>أحدث الطلبات</h2><a href="#" class="btn-view-all">عرض الكل</a></div>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>رقم الطلب</th>
-                            <th>العميل</th>
-                            <th>التاريخ</th>
-                            <th>الإجمالي</th>
-                            <th>الحالة</th>
-                            <th>إجراءات</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>رقم الطلب</th><th>العميل</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td>#ORD-1004</td>
-                            <td>محمد علي</td>
-                            <td>اليوم، 10:30 ص</td>
-                            <td>1,050 ج.م</td>
-                            <td><span class="status pending">قيد الانتظار</span></td>
-                            <td>
-                                <button class="action-btn"><i class="far fa-eye"></i></button>
-                                <button class="action-btn"><i class="fas fa-check"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-1003</td>
-                            <td>سارة أحمد</td>
-                            <td>أمس، 08:15 م</td>
-                            <td>650 ج.م</td>
-                            <td><span class="status shipped">تم الشحن</span></td>
-                            <td>
-                                <button class="action-btn"><i class="far fa-eye"></i></button>
-                                <button class="action-btn"><i class="fas fa-check"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-1002</td>
-                            <td>خالد حسن</td>
-                            <td>أمس، 02:00 م</td>
-                            <td>350 ج.م</td>
-                            <td><span class="status completed">مكتمل</span></td>
-                            <td>
-                                <button class="action-btn"><i class="far fa-eye"></i></button>
-                                <button class="action-btn"><i class="fas fa-check"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#ORD-1001</td>
-                            <td>منى محمود</td>
-                            <td>منذ يومين</td>
-                            <td>1,200 ج.م</td>
-                            <td><span class="status completed">مكتمل</span></td>
-                            <td>
-                                <button class="action-btn"><i class="far fa-eye"></i></button>
-                                <button class="action-btn"><i class="fas fa-check"></i></button>
-                            </td>
-                        </tr>
+                        <tr><td>#ORD-1004</td><td>محمد علي</td><td>اليوم، 10:30 ص</td><td>1,050 ج.م</td><td><span class="status pending">قيد الانتظار</span></td><td><button class="action-btn"><i class="far fa-eye"></i></button></td></tr>
+                        <tr><td>#ORD-1003</td><td>سارة أحمد</td><td>أمس، 08:15 م</td><td>650 ج.م</td><td><span class="status shipped">تم الشحن</span></td><td><button class="action-btn"><i class="far fa-eye"></i></button></td></tr>
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
-
 </body>
 </html>

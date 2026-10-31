@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة المشتريات | الغرباوي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8A3324; --primary-dark: #5A1F14; --secondary: #D4A373;
+            --bg-light: #FAFAFA; --text-dark: #1A1A1A; --text-muted: #777;
+            --white: #ffffff; --shadow-sm: 0 4px 10px rgba(0,0,0,0.05);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); }
+        a { text-decoration: none; color: inherit; }
+
+        /* الهيدر */
+        header { background: var(--white); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); margin-bottom: 40px; }
+        .logo h1 { color: var(--primary); font-size: 2rem; font-weight: 900; }
+        
+        /* عنوان الصفحة */
+        .page-title { text-align: center; font-size: 2rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 40px; }
+
+        /* تقسيمة السلة */
+        .cart-container { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; padding: 0 5% 80px; }
+
+        /* جدول المنتجات */
+        .cart-items { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: var(--shadow-sm); }
+        .cart-item {
+            display: grid; grid-template-columns: 100px 2fr 1fr 1fr 50px;
+            align-items: center; gap: 20px; border-bottom: 1px solid #eee; padding: 20px 0;
+        }
+        .cart-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .cart-item img { width: 100%; height: 100px; object-fit: contain; background: #f9f9f9; border-radius: 10px; }
+        .cart-item-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; }
+        .cart-item-meta { font-size: 0.85rem; color: var(--text-muted); }
+        .cart-item-price { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        
+        .qty-control { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 5px; width: fit-content; }
+        .qty-control button { width: 30px; height: 30px; background: none; border: none; cursor: pointer; font-weight: bold; }
+        .qty-control span { width: 30px; text-align: center; font-weight: bold; }
+        
+        .remove-btn { background: #ffebee; color: #d32f2f; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; transition: var(--transition); }
+        .remove-btn:hover { background: #d32f2f; color: white; }
+
+        /* ملخص الطلب */
+        .cart-summary {
+            background: var(--white); border-radius: 15px; padding: 30px; box-shadow: var(--shadow-sm);
+            height: fit-content; position: sticky; top: 20px;
+        }
+        .cart-summary h2 { font-size: 1.3rem; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 600; color: var(--text-muted); }
+        .summary-row.total { font-size: 1.3rem; font-weight: 900; color: var(--primary-dark); border-top: 2px dashed #eee; padding-top: 15px; margin-bottom: 25px; }
+        
+        .coupon-box { display: flex; gap: 10px; margin-bottom: 25px; }
+        .coupon-box input { flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Cairo'; outline: none; }
+        .coupon-box button { background: var(--text-dark); color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; }
+
+        .checkout-btn {
+            width: 100%; padding: 15px; background: var(--primary); color: var(--white);
+            border: none; border-radius: 8px; font-family: 'Cairo'; font-size: 1.2rem;
+            font-weight: 800; cursor: pointer; transition: var(--transition);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .checkout-btn:hover { background: var(--primary-dark); }
+
+        /* الموبايل */
+        @media (max-width: 992px) {
+            .cart-container { grid-template-columns: 1fr; }
+            .cart-item { grid-template-columns: 80px 1fr; gap: 15px; }
+            .cart-item-price, .qty-control, .remove-btn { grid-column: 2; margin-top: 10px; }
+            .remove-btn { justify-self: end; margin-top: -40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر -->
+    <header>
+        <a href="index.html" class="logo"><h1>الغرباوي</h1></a>
+        <div style="font-size: 1.2rem;"><i class="fas fa-lock" style="color: #4CAF50;"></i> دفع آمن</div>
+    </header>
+
+    <h1 class="page-title">سلة المشتريات</h1>
+
+    <section class="cart-container">
+        
+        <!-- المنتجات -->
+        <div class="cart-items">
+            
+            <!-- منتج 1 -->
+            <div class="cart-item">
+                <img src="https://sc01.alicdn.com/kf/Hfe6f403b5b8d4e2c9a9f43d031b03b6dO.png" alt="بن كولومبي">
+                <div>
+                    <div class="cart-item-title">بن كولومبي - تحميص وسط</div>
+                    <div class="cart-item-meta">250 جرام</div>
+                </div>
+                <div class="cart-item-price">350.00 ج.م</div>
+                <div class="qty-control">
+                    <button>-</button>
+                    <span>1</span>
+                    <button>+</button>
+                </div>
+                <button class="remove-btn"><i class="fas fa-trash-alt"></i></button>
+            </div>
+
+            <!-- منتج 2 -->
+            <div class="cart-item">
+                <img src="https://sc04.alicdn.com/kf/H9f5a6c2b6d804f7f9a0e3f4b5c6d7e8fX.png" alt="أداة V60">
+                <div>
+                    <div class="cart-item-title">أداة تقطير V60 سيراميك</div>
+                    <div class="cart-item-meta">أبيض</div>
+                </div>
+                <div class="cart-item-price">650.00 ج.م</div>
+                <div class="qty-control">
+                    <button>-</button>
+                    <span>1</span>
+                    <button>+</button>
+                </div>
+                <button class="remove-btn"><i class="fas fa-trash-alt"></i></button>
+            </div>
+
+        </div>
+
+        <!-- ملخص الطلب -->
+        <div class="cart-summary">
+            <h2>ملخص الطلب</h2>
+            
+            <div class="summary-row">
+                <span>المجموع الفرعي</span>
+                <span>1000.00 ج.م</span>
+            </div>
+            <div class="summary-row">
+                <span>الشحن</span>
+                <span>50.00 ج.م</span>
+            </div>
+            
+            <div class="coupon-box">
+                <input type="text" placeholder="كود الخصم">
+                <button>تطبيق</button>
+            </div>
+
+            <div class="summary-row total">
+                <span>الإجمالي</span>
+                <span>1050.00 ج.م</span>
+            </div>
+
+            <button class="checkout-btn" onclick="window.location.href='checkout.html'">
+                إتمام الطلب <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+
+    </section>
+
+</body>
+</html>

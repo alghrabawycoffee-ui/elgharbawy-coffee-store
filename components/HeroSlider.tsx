@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade } from 'swiper/modules';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import { ArrowLeft } from 'lucide-react';
 import { getSupabase } from '../lib/supabase';
 
 export default function HeroSlider() {
@@ -20,55 +20,52 @@ export default function HeroSlider() {
     fetchBanners();
   }, []);
 
-  if (loading) return <div className="h-[600px] w-full bg-[#FDFBF7] animate-pulse"></div>;
+  if (loading) return <div className="h-[500px] w-full bg-[#1A120B] animate-pulse"></div>;
   if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full h-[600px] md:h-[700px] bg-[#FDFBF7] overflow-hidden">
+    <section className="relative w-full h-[500px] md:h-[600px] bg-[#1A120B]">
       <Swiper 
-        modules={[Autoplay, EffectFade]} 
-        effect="fade"
+        modules={[Autoplay, Pagination]} 
         spaceBetween={0} 
         slidesPerView={1} 
         loop={banners.length > 1}
         autoplay={{ delay: 5000, disableOnInteraction: false }} 
+        pagination={{ clickable: true }} 
         className="w-full h-full"
       >
         {banners.map((banner) => (
           <SwiperSlide key={banner.id} className="relative w-full h-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full max-w-7xl mx-auto px-4 md:px-10 items-center">
+            
+            {/* الخلفية - مضمونة إنها متغطيش على النص */}
+            <div className="absolute inset-0 w-full h-full">
+              <img 
+                src={banner.image_url} 
+                alt={banner.title} 
+                className="w-full h-full object-cover" 
+              />
+              {/* طبقة تظليل قوية لضمان قراءة النص */}
+              <div className="absolute inset-0 bg-black/60 md:bg-gradient-to-l md:from-[#1A120B]/95 md:via-[#1A120B]/70 md:to-transparent"></div>
+            </div>
+            
+            {/* المحتوى */}
+            <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-10 flex flex-col justify-center items-center md:items-start text-center md:text-right">
+              <span className="bg-[#8A3324] text-white text-xs md:text-sm font-bold px-4 py-1.5 rounded-full mb-6">
+                {banner.tag}
+              </span>
               
-              {/* النص (يمين) */}
-              <div className="order-2 md:order-1 flex flex-col justify-center h-full pt-10 md:pt-0 z-10">
-                <span className="text-[#8A3324] font-black text-sm tracking-widest uppercase mb-4 flex items-center gap-2">
-                  <span className="w-8 h-[2px] bg-[#8A3324]"></span>
-                  {banner.tag}
-                </span>
-                
-                <h1 className="text-5xl md:text-7xl lg:text-[5rem] font-black text-[#1A120B] leading-[1.1] mb-6 tracking-tighter">
-                  {banner.title} <br />
-                  <span className="text-[#D4A373]">{banner.subtitle}</span>
-                </h1>
-                
-                <p className="text-gray-500 text-base md:text-lg mb-8 max-w-md leading-relaxed font-medium">
-                  {banner.description}
-                </p>
-                
-                <Link href="#products" className="group bg-[#1A120B] text-white w-fit px-8 py-4 rounded-full font-bold flex items-center gap-3 hover:bg-[#8A3324] transition-colors">
-                  اكتشف المجموعة <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                </Link>
-              </div>
-
-              {/* الصورة (شمال) */}
-              <div className="order-1 md:order-2 relative h-[300px] md:h-full flex items-center justify-center">
-                {/* خلفية دائرية ملونة */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-[#EBE3DB] rounded-full blur-3xl opacity-50"></div>
-                <img 
-                  src={banner.image_url} 
-                  alt={banner.title} 
-                  className="relative z-10 w-full h-full object-contain drop-shadow-2xl"
-                />
-              </div>
+              <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-4">
+                {banner.title} <br />
+                <span className="text-[#D4A373]">{banner.subtitle}</span>
+              </h1>
+              
+              <p className="text-gray-300 text-sm md:text-lg mb-8 max-w-lg leading-relaxed">
+                {banner.description}
+              </p>
+              
+              <Link href="#products" className="bg-white text-[#1A120B] px-8 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-[#D4A373] transition-colors">
+                تسوق الآن <ArrowLeft className="w-4 h-4" />
+              </Link>
             </div>
           </SwiperSlide>
         ))}

@@ -2,9 +2,9 @@ import { Suspense } from 'react'
 import { getSupabase } from '../lib/supabase'
 import HeroSlider from '../components/HeroSlider'
 import ProductCard from '../components/ProductCard'
-import AppPromo from '../components/AppPromo'
 import BrandStory from '../components/BrandStory' 
-import BentoCategories from '../components/BentoCategories'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 async function PageContent() {
   const supabase = getSupabase(); 
@@ -24,58 +24,55 @@ async function PageContent() {
   };
 
   return (
-    <>
-      <BentoCategories categories={categories} />
-
-      <div id="products" className="max-w-7xl mx-auto px-4 md:px-10 py-20 border-t border-gray-200/60 mt-10">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-          <div>
-            <h2 className="text-4xl md:text-6xl font-black text-[#1A120B] tracking-tighter mb-2">{content.productsTitle}</h2>
-            <p className="text-gray-500 text-base font-medium">{content.productsSubtitle}</p>
+    <div className="max-w-7xl mx-auto px-4 md:px-8">
+      
+      {/* 1. الأقسام (شكل شبكة منتظمة) */}
+      {categories.length > 0 && (
+        <div className="py-16 border-b border-gray-200">
+          <h2 className="text-2xl font-black text-center mb-8">تسوق حسب القسم</h2>
+          <div className="flex overflow-x-auto gap-4 pb-4 hide-scrollbar justify-start md:justify-center">
+            {categories.map((cat) => (
+              <Link href="#products" key={cat.id} className="flex-shrink-0 group">
+                <div className="flex flex-col items-center gap-3 w-24">
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8A3324] p-1 transition-colors bg-white shadow-sm">
+                    <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover rounded-full" />
+                  </div>
+                  <span className="text-xs font-bold text-center text-gray-700">{cat.name}</span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
+      )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-8 md:gap-y-16">
+      {/* 2. المنتجات (شبكة منتظمة 2 في الموبايل و 4 في الكمبيوتر) */}
+      <div id="products" className="py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-black text-[#1A120B] mb-2">{content.productsTitle}</h2>
+          <p className="text-gray-500 text-sm">{content.productsSubtitle}</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product: any) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>
 
+      {/* 3. قصة البراند */}
       <BrandStory />
-    </>
+      
+    </div>
   );
 }
 
 export default function Home() {
   return (
     <main className="bg-[#FDFBF7]">
-      
-      {/* شريط Marquee متحرك */}
-      <div className="bg-[#1A120B] text-[#D4A373] py-3 overflow-hidden flex whitespace-nowrap">
-        <div className="animate-marquee flex gap-8 text-sm font-bold uppercase tracking-widest">
-          <span>أجود حبوب القهوة المختصة</span>
-          <span>•</span>
-          <span>توصيل سريع لجميع المحافظات</span>
-          <span>•</span>
-          <span>محمص طازج يومياً</span>
-          <span>•</span>
-          <span>أجود حبوب القهوة المختصة</span>
-          <span>•</span>
-          <span>توصيل سريع لجميع المحافظات</span>
-          <span>•</span>
-          <span>محمص طازج يومياً</span>
-          <span>•</span>
-        </div>
-      </div>
-
       <HeroSlider />
-      
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري تحميل الصفحة...</div>}>
         <PageContent />
       </Suspense>
-      
-      <AppPromo />
     </main>
   )
 }

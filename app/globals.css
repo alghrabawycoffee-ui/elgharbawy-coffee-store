@@ -4,7 +4,6 @@
   --bg-cream: #FDFBF7;       
   --text-espresso: #1A120B;  
   --brand-terracotta: #8A3324; 
-  --brand-gold: #D4A373;     
 }
 
 body {
@@ -16,57 +15,6 @@ body {
 
 html { scroll-behavior: smooth; }
 
+/* إخفاء شريط التمرير */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* شريط Marquee المتحرك */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 20s linear infinite;
-  white-space: nowrap;
-}
-
-/* ظل الكروت الفخم */
-.luxury-shadow {
-  box-shadow: 0 10px 40px -10px rgba(26, 18, 11, 0.08);
-}
-.luxury-shadow:hover {
-  box-shadow: 0 20px 50px -10px rgba(26, 18, 11, 0.15);
-}
-
-/* تنسيقات Bento Grid */
-.bento-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 2rem;
-  display: flex;
-  align-items: flex-end;
-  padding: 2rem;
-  transition: all 0.5s ease;
-}
-.bento-card img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s ease;
-}
-.bento-card:hover img {
-  transform: scale(1.05);
-}
-.bento-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(26,18,11,0.8), transparent);
-  z-index: 1;
-}
-.bento-content {
-  position: relative;
-  z-index: 2;
-  color: white;
-}

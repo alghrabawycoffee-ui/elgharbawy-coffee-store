@@ -11,52 +11,50 @@ export default function ProductCard({ product }: { product: any }) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault(); 
     addToCart(product);
-    toast.success(`تمت الإضافة للسلة`);
+    toast.success(`تمت إضافة ${product.name} للسلة`);
   };
 
   return (
-    <Link href={`/product/${product.id}`} className="group block w-full">
-      <div className="relative flex flex-col">
-        
-        {/* حاوية الصورة - خلفية رمادية ناعمة جداً */}
-        <div className="relative w-full aspect-[3/4] bg-[#F4EFEA] rounded-[2rem] flex items-center justify-center p-6 mb-4 overflow-hidden transition-all duration-500 group-hover:bg-[#EBE3DB]">
-          
-          {/* علامة "عرض" */}
-          {product.old_price && (
-            <div className="absolute top-4 right-4 bg-[#8A3324] text-white text-[10px] font-black px-3 py-1 rounded-full z-10 shadow-sm">
-              خصم
-            </div>
-          )}
+    <div className="bg-white rounded-2xl p-3 md:p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full border border-gray-100">
+      
+      {/* الصورة - مقاس ثابت ومضمون */}
+      <Link href={`/product/${product.id}`} className="relative w-full aspect-square bg-[#FDFBF7] rounded-xl overflow-hidden mb-4 block group">
+        <img 
+          src={product.image_url || fallbackImage} 
+          alt={product.name}
+          className="w-full h-full object-contain p-4 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+        />
+        {product.old_price && (
+          <span className="absolute top-2 right-2 bg-[#8A3324] text-white text-[10px] font-bold px-2 py-1 rounded-md">
+            خصم
+          </span>
+        )}
+      </Link>
 
-          <img 
-            src={product.image_url || fallbackImage} 
-            alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-700 ease-out"
-          />
-          
-          {/* زرار إضافة سريع يظهر من تحت */}
-          <button 
-            onClick={handleAdd}
-            className="absolute bottom-4 left-4 right-4 bg-[#1A120B] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-[#8A3324]"
-          >
-            <Plus className="w-4 h-4" /> إضافة سريعة
-          </button>
-        </div>
-
-        {/* التفاصيل */}
-        <div className="text-center px-2">
-          <h3 className="text-sm md:text-base font-bold text-gray-900 mb-1 truncate group-hover:text-[#8A3324] transition-colors">
+      {/* التفاصيل - مرتبة تحت بعضها */}
+      <div className="flex flex-col flex-grow text-center">
+        <Link href={`/product/${product.id}`}>
+          <h3 className="text-sm md:text-base font-bold text-gray-800 mb-2 truncate hover:text-[#8A3324] transition-colors">
             {product.name}
           </h3>
-          <div className="flex items-center justify-center gap-2 mt-1">
-            <span className="text-sm font-black text-[#8A3324]">{product.price} ج.م</span>
+        </Link>
+        
+        <div className="mt-auto pt-2">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="text-base md:text-lg font-black text-[#8A3324]">{product.price} ج.م</span>
             {product.old_price && (
-              <span className="text-xs text-gray-400 line-through font-bold">{product.old_price} ج.م</span>
+              <span className="text-xs text-gray-400 line-through">{product.old_price}</span>
             )}
           </div>
+          
+          <button 
+            onClick={handleAdd}
+            className="w-full bg-[#1A120B] text-white text-xs md:text-sm font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-[#8A3324] transition-colors"
+          >
+            <Plus className="w-4 h-4" /> أضف للسلة
+          </button>
         </div>
-
       </div>
-    </Link>
+    </div>
   );
 }

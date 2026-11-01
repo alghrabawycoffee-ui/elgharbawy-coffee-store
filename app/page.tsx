@@ -6,30 +6,24 @@ import ProductCard from '../components/ProductCard'
 import AppPromo from '../components/AppPromo'
 import Link from 'next/link'
 
-// 1. مكون جلب المنتجات
-async function ProductsList() {
+async function PageContent() {
   const supabase = getSupabase(); 
-  const { data: products, error } = await supabase.from('products').select('*')
+  
+  // جلب المنتجات والنصوص مع بعض
+  const [productsRes, contentRes] = await Promise.all([
+    supabase.from('products').select('*'),
+    supabase.from('site_content').select('key, value').in('key', ['categories_title', 'products_title', 'products_subtitle'])
+  ]);
 
-  if (error) return <div className="text-center text-red-500 p-10 font-bold">حدث خطأ في جلب البيانات</div>
-  if (!products || products.length === 0) return <p className="text-center text-gray-500 py-10 font-bold">لا توجد منتجات حالياً.</p>
+  const products = productsRes.data || [];
+  const contentData = contentRes.data || [];
+  
+  const content = {
+    categoriesTitle: contentData.find(c => c.key === 'categories_title')?.value || 'تسوق حسب القسم',
+    productsTitle: contentData.find(c => c.key === 'products_title')?.value || 'الأكثر مبيعاً',
+    productsSubtitle: contentData.find(c => c.key === 'products_subtitle')?.value || 'اكتشف تشكيلتنا المختارة بعناية',
+  };
 
-  return (
-    // على الموبايل: سلايدر أفقي (flex + overflow-x-auto + snap) 
-    // على الكمبيوتر: جريد عادي (md:grid + md:overflow-visible)
-    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 md:px-10 py-6 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-8 md:overflow-visible hide-scrollbar">
-      {products.map((product: any) => (
-        <div key={product.id} className="min-w-[70vw] sm:min-w-[40vw] md:min-w-0 snap-center">
-          <ProductCard product={product} />
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// 2. الصفحة الرئيسية
-export default function Home() {
-  // أقسام المتجر (تقدر تغير الصور دي براحتك)
   const categories = [
     { name: 'حبوب القهوة', icon: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
     { name: 'أدوات التقطير', icon: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' },
@@ -38,17 +32,9 @@ export default function Home() {
   ];
 
   return (
-    <main className="pb-10 bg-[#FDFBF7] overflow-hidden">
-      
-      {/* 1. البانر السينمائي */}
-      <HeroSlider />
-      
-      {/* 2. شريط المميزات */}
-      <Features />
-
-      {/* 3. الأقسام (شكل دائري زي التطبيقات) */}
+    <>
       <div className="container mx-auto px-4 md:px-10 mt-12 mb-8">
-        <h2 className="text-xl md:text-2xl font-black text-[#1A120B] mb-6">تسوق حسب القسم</h2>
+        <h2 className="text-xl md:text-2xl font-black text-[#1A120B] mb-6">{content.categoriesTitle}</h2>
         <div className="flex gap-6 overflow-x-auto pb-4 hide-scrollbar snap-x">
           {categories.map((cat, i) => (
             <Link href="#products" key={i} className="flex flex-col items-center gap-3 snap-center shrink-0 group">
@@ -61,24 +47,37 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 4. المنتجات الأكثر مبيعاً */}
       <div id="products" className="container mx-auto md:px-6 pt-6">
         <div className="flex justify-between items-end mb-6 px-4 md:px-4">
           <div>
-            <h2 className="text-2xl md:text-4xl font-black text-[#1A120B]">الأكثر <span className="text-[#8A3324]">مبيعاً</span></h2>
-            <p className="text-gray-500 mt-2 text-sm font-medium">اكتشف تشكيلتنا المختارة بعناية</p>
+            <h2 className="text-2xl md:text-4xl font-black text-[#1A120B]">{content.productsTitle}</h2>
+            <p className="text-gray-500 mt-2 text-sm font-medium">{content.productsSubtitle}</p>
           </div>
           <Link href="#" className="text-sm font-bold text-[#8A3324] hover:underline mb-1">عرض الكل</Link>
         </div>
 
-        <Suspense fallback={<div className="text-center py-10 text-gray-500 font-bold">جاري تحميل المنتجات...</div>}>
-          <ProductsList />
-        </Suspense>
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 md:px-10 py-6 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-8 md:overflow-visible hide-scrollbar">
+          {products.map((product: any) => (
+            <div key={product.id} className="min-w-[70vw] sm:min-w-[40vw] md:min-w-0 snap-center">
+              <ProductCard product={product} />
+            </div>
+          ))}
+          {products.length === 0 && <p className="text-center w-full text-gray-500 font-bold py-10">لا توجد منتجات حالياً.</p>}
+        </div>
       </div>
+    </>
+  );
+}
 
-      {/* 5. قسم تحميل التطبيق */}
+export default function Home() {
+  return (
+    <main className="pb-10 bg-[#FDFBF7] overflow-hidden">
+      <HeroSlider />
+      <Features />
+      <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري تحميل الصفحة...</div>}>
+        <PageContent />
+      </Suspense>
       <AppPromo />
-      
     </main>
   )
 }

@@ -1,11 +1,13 @@
 "use client"; 
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
 
 export default function ProductCard({ product }: { product: any }) {
   const addToCart = useCartStore((state) => state.addToCart);
-  const fallbackImage = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80";
+  // الصورة البديلة لو المنتج ملوش صورة
+  const fallbackImage = "/images/bag.jpg"; 
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault(); 
@@ -14,42 +16,43 @@ export default function ProductCard({ product }: { product: any }) {
   };
 
   return (
-    <div className="group flex flex-col w-full">
-      {/* الصورة - مساحة فاضية بدون حدود */}
-      <Link href={`/product/${product.id}`} className="relative w-full aspect-[3/4] flex items-center justify-center mb-6 overflow-hidden">
-        {product.old_price && (
-          <span className="absolute top-2 right-2 text-[#8A3324] text-[10px] font-bold uppercase tracking-wider z-10">
-            عرض خاص
-          </span>
-        )}
+    <div className="group bg-white rounded-[2rem] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 flex flex-col h-full">
+      
+      <Link href={`/product/${product.id}`} className="relative w-full aspect-square bg-[#F9F6F0] rounded-[1.5rem] overflow-hidden mb-4 block">
         <img 
           src={product.image_url || fallbackImage} 
           alt={product.name}
-          className="w-[80%] h-[80%] object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-700 ease-out drop-shadow-xl"
+          className="w-full h-full object-contain p-6 mix-blend-multiply group-hover:scale-110 transition-transform duration-700"
         />
+        {product.old_price && (
+          <span className="absolute top-4 right-4 bg-[#A44222] text-white text-[10px] font-bold px-3 py-1 rounded-full">
+            عرض
+          </span>
+        )}
       </Link>
 
-      {/* التفاصيل */}
-      <div className="text-center flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow text-center px-2">
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-sm md:text-base font-light text-[#1C1512] mb-1 truncate group-hover:text-[#8A3324] transition-colors">
+          <h3 className="text-sm md:text-base font-bold text-[#1A120B] mb-2 truncate group-hover:text-[#A44222] transition-colors">
             {product.name}
           </h3>
         </Link>
         
-        <div className="flex items-center justify-center gap-2 mt-1 mb-4">
-          <span className="text-sm font-bold text-[#1C1512]">{product.price} ج.م</span>
-          {product.old_price && (
-            <span className="text-xs text-gray-400 line-through font-light">{product.old_price}</span>
-          )}
+        <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-100">
+          <div className="flex flex-col items-start">
+            <span className="text-lg font-black text-[#A44222]">{product.price} <span className="text-xs">ج.م</span></span>
+            {product.old_price && (
+              <span className="text-xs text-gray-400 line-through">{product.old_price}</span>
+            )}
+          </div>
+          
+          <button 
+            onClick={handleAdd}
+            className="w-10 h-10 bg-[#1A120B] text-white rounded-full flex items-center justify-center hover:bg-[#A44222] transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
         </div>
-
-        <button 
-          onClick={handleAdd}
-          className="mt-auto text-xs font-bold text-[#8A3324] uppercase tracking-wider border-b border-transparent hover:border-[#8A3324] pb-1 transition-all mx-auto"
-        >
-          أضف إلى السلة
-        </button>
       </div>
     </div>
   );

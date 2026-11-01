@@ -2,80 +2,104 @@
 
 import { useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase';
-import { Save, ArrowRight, Type } from 'lucide-react';
+import { Clock, CheckCircle2, Truck, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
 
-export default function AdminContentPage() {
-  const [contents, setContents] = useState<any[]>([]);
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [savingId, setSavingId] = useState<number | null>(null);
 
-  useEffect(() => {
-    fetchContent();
-  }, []);
-
-  const fetchContent = async () => {
+  const fetchOrders = async () => {
     const supabase = getSupabase();
-    const { data, error } = await supabase.from('site_content').select('*').order('id');
-    if (!error && data) setContents(data);
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false }); // الأحدث الأول
+
+    if (!error && data) setOrders(data);
     setLoading(false);
   };
 
-  const handleChange = (id: number, newValue: string) => {
-    setContents(contents.map(c => c.id === id ? { ...c, value: newValue } : c));
-  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-  const handleSave = async (id: number, key: string, value: string) => {
-    setSavingId(id);
+  const updateStatus = async (id: string, newStatus: string) => {
     const supabase = getSupabase();
-    const { error } = await supabase.from('site_content').update({ value }).eq('id', id);
+    const { error } = await supabase
+      .from('orders')
+      .update({ status: newStatus })
+      .eq('id', id);
 
     if (error) {
-      toast.error('حدث خطأ أثناء الحفظ');
+      toast.error('حدث خطأ أثناء التحديث');
     } else {
-      toast.success(`تم حفظ النص بنجاح!`);
+      toast.success('تم تحديث حالة الطلب بنجاح');
+      fetchOrders(); // تحديث الجدول
     }
-    setSavingId(null);
   };
 
-  if (loading) return <div className="text-center py-20 text-xl font-bold">جاري التحميل...</div>;
+  // دالة مساعدة لعرض لون الحالة
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending': return <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Clock className="w-3 h-3"/> قيد الانتظار</span>;
+      case 'shipped': return <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Truck className="w-3 h-3"/> تم الشحن</span>;
+      case 'completed': return <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><CheckCircle2 className="w-3 h-3"/> مكتمل</span>;
+      case 'cancelled': return <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><XCircle className="w-3 h-3"/> ملغي</span>;
+      default: return <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-bold">{status}</span>;
+    }
+  };
+
+  if (loading) return <div className="text-center py-20 text-xl font-bold">جاري تحميل الطلبات...</div>;
 
   return (
-    <div className="container mx-auto px-4 py-10 max-w-4xl">
-      <Link href="/admin" className="flex items-center gap-2 text-gray-500 hover:text-[#8A3324] mb-6 font-bold">
-        <ArrowRight className="w-5 h-5" /> العودة للوحة التحكم
-      </Link>
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-black text-[#5A1F14]">إدارة الطلبات</h1>
+      </div>
 
-      <div className="bg-white p-8 rounded-2xl shadow-sm">
-        <h1 className="text-2xl font-black text-[#5A1F14] mb-8 flex items-center gap-2">
-          <Type className="w-6 h-6" /> التحكم في نصوص الموقع
-        </h1>
-
-        <div className="space-y-6">
-          {contents.map((item) => (
-            <div key={item.id} className="border border-gray-200 p-4 rounded-xl">
-              <div className="flex justify-between items-center mb-2">
-                <label className="font-bold text-gray-700">{item.key}</label>
-                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">{item.section}</span>
-              </div>
-              <div className="flex gap-3">
-                <input 
-                  type="text" 
-                  value={item.value || ''} 
-                  onChange={(e) => handleChange(item.id, e.target.value)}
-                  className="w-full border p-3 rounded-lg bg-gray-50 focus:border-[#8A3324] outline-none" 
-                />
-                <button 
-                  onClick={() => handleSave(item.id, item.key, item.value)}
-                  disabled={savingId === item.id}
-                  className="bg-[#8A3324] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#5A1F14] transition-colors flex items-center gap-2 disabled:opacity-50"
-                >
-                  <Save className="w-4 h-4" /> {savingId === item.id ? 'جاري الحفظ' : 'حفظ'}
-                </button>
-              </div>
-            </div>
-          ))}
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-right">
+            <thead className="bg-gray-50 text-gray-500 text-sm">
+              <tr>
+                <th className="p-4 font-bold">رقم الطلب</th>
+                <th className="p-4 font-bold">اسم العميل</th>
+                <th className="p-4 font-bold">الموبايل</th>
+                <th className="p-4 font-bold">الإجمالي</th>
+                <th className="p-4 font-bold">الحالة الحالية</th>
+                <th className="p-4 font-bold">تغيير الحالة</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {orders.map((order) => (
+                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-4 font-mono text-sm">{order.id.slice(0, 8)}...</td>
+                  <td className="p-4 font-bold">{order.customer_name}</td>
+                  <td className="p-4 text-gray-600" dir="ltr">{order.phone}</td>
+                  <td className="p-4 font-black text-[#8A3324]">{order.total_price} ج.م</td>
+                  <td className="p-4">{getStatusBadge(order.status)}</td>
+                  <td className="p-4">
+                    <select 
+                      className="border rounded-lg p-2 text-sm focus:outline-none focus:border-[#8A3324] bg-white cursor-pointer"
+                      value={order.status}
+                      onChange={(e) => updateStatus(order.id, e.target.value)}
+                    >
+                      <option value="pending">قيد الانتظار</option>
+                      <option value="shipped">تم الشحن</option>
+                      <option value="completed">مكتمل</option>
+                      <option value="cancelled">ملغي</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+              {orders.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-10 text-center text-gray-500">لا توجد طلبات حتى الآن.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

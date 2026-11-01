@@ -38,6 +38,7 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8">
       
+      {/* شريط الأقسام */}
       {categories.length > 0 && (
         <div className="py-6 border-b border-gray-200">
           <div className="flex overflow-x-auto gap-8 pb-2 hide-scrollbar justify-start md:justify-center">
@@ -45,10 +46,10 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
               <Link 
                 href={`/?category=${cat.id}#products`} 
                 key={cat.id} 
-                className={`text-[13px] whitespace-nowrap pb-2 border-b-2 transition-all duration-300 ${
+                className={`text-[14px] whitespace-nowrap pb-2 border-b-2 transition-all duration-300 ${
                   categoryId === cat.id 
-                    ? 'text-[#A44222] border-[#A44222] font-bold' 
-                    : 'text-gray-500 border-transparent hover:text-[#A44222] font-medium'
+                    ? 'text-[#A44222] border-[#A44222] font-semibold' 
+                    : 'text-gray-500 border-transparent hover:text-[#A44222] font-normal'
                 }`}
               >
                 {cat.name}
@@ -58,6 +59,7 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
         </div>
       )}
 
+      {/* المنتجات */}
       <div id="products" className="py-12">
         <div className="flex justify-between items-end mb-8 border-b border-gray-200 pb-4">
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 tracking-tight">
@@ -80,7 +82,7 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
             <p className="text-base font-medium text-gray-500">لا توجد منتجات مطابقة.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -88,8 +90,9 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
         )}
       </div>
 
+      {/* الشريط المتحرك */}
       {contentMap.show_marquee === 'true' && (
-        <div className="bg-[#FDFBF7] border-y border-gray-200 py-3 overflow-hidden flex whitespace-nowrap mb-12" dir="ltr">
+        <div className="bg-[#F9F8F6] border-y border-gray-200 py-3 overflow-hidden flex whitespace-nowrap mb-12" dir="ltr">
           <div className="animate-marquee flex gap-10 items-center text-[13px] font-medium tracking-wide text-gray-500">
              <span>{contentMap.marquee_text}</span>
              <span>{contentMap.marquee_text}</span>
@@ -97,17 +100,9 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
         </div>
       )}
 
-      {contentMap.show_features === 'true' && (
-        <Features content={contentMap} />
-      )}
-
-      {contentMap.show_story === 'true' && (
-        <BrandStory content={contentMap} />
-      )}
-
-      {contentMap.show_testimonials === 'true' && (
-        <Testimonials content={contentMap} />
-      )}
+      {contentMap.show_features === 'true' && <Features content={contentMap} />}
+      {contentMap.show_story === 'true' && <BrandStory content={contentMap} />}
+      {contentMap.show_testimonials === 'true' && <Testimonials content={contentMap} />}
 
     </div>
   );
@@ -115,7 +110,7 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
 
 export default function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   return (
-    <main className="bg-[#FAFAFA] min-h-screen">
+    <main className="bg-[#F9F8F6] min-h-screen">
       <HeroSlider />
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-medium">جاري التحميل...</div>}>
         <PageContent searchParams={searchParams} />

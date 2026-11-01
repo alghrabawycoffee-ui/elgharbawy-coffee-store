@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --bg-main: #FAFAFA;
-  --brand-color: #A44222;
+  --bg-main: #F9F8F6;       /* لون بيج دافي وفخم جداً */
+  --text-main: #1A120B;     /* بني قهوة غامق للنصوص */
+  --brand-color: #A44222;   /* لون البراند الأساسي */
 }
 
 body {
   background-color: var(--bg-main);
-  color: #1A120B;
+  color: var(--text-main);
   font-family: var(--font-cairo), sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
+
+html { scroll-behavior: smooth; }
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -23,31 +25,4 @@ body {
 }
 .animate-slide-in {
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* حركة الزووم البطيء لصورة البانر */
-@keyframes slowZoom {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.1); }
-}
-.animate-slow-zoom {
-  animation: slowZoom 20s ease-in-out infinite alternate;
-}
-
-/* حركة طلوع الكلام (Fade In Up) */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-/* حركة الشريط المتحرك (Marquee) */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(50%); } /* بيتحرك بناءً على اتجاه اللغة */
-}
-.animate-marquee {
-  animation: marquee 20s linear infinite;
 }

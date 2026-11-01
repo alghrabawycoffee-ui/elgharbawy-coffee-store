@@ -5,6 +5,7 @@ import { Phone, Mail, Instagram, Facebook } from 'lucide-react';
 import { getSupabase } from '../lib/supabase';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
   const [content, setContent] = useState({
     about: 'وجهتك الأولى للقهوة المختصة في مصر.',
     phone: '01000000000',
@@ -31,32 +32,66 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#1A120B] text-white pt-20 pb-10 mt-auto border-t-[6px] border-[#8A3324]">
-      <div className="container mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
-        <div className="col-span-1 md:col-span-1">
-          <Link href="/" className="text-3xl font-black text-[#D4A373] mb-6 block tracking-tighter">الغرباوي</Link>
-          <p className="text-gray-400 text-sm leading-relaxed mb-8">{content.about}</p>
-          <div className="flex gap-4">
-            <a href="#" className="bg-white/5 hover:bg-[#D4A373] hover:text-[#1A120B] p-2.5 rounded-full transition-all duration-300"><Instagram className="w-4 h-4" /></a>
-            <a href="#" className="bg-white/5 hover:bg-[#D4A373] hover:text-[#1A120B] p-2.5 rounded-full transition-all duration-300"><Facebook className="w-4 h-4" /></a>
+    <footer className="bg-[#3E2723] text-white pt-16 pb-8">
+      
+      {/* قسم النشرة البريدية (زي بن مصر) */}
+      <div className="container mx-auto px-4 md:px-8 max-w-6xl mb-12 border-b border-white/10 pb-12">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-right">
+            <h3 className="text-2xl font-bold mb-2">انضم إلى قائمتنا البريدية</h3>
+            <p className="text-gray-400 text-sm">انضم للحصول على أحدث التخفيضات والعروض الحصرية.</p>
           </div>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-white mb-6 uppercase tracking-wider">المتجر</h3>
-          <ul className="space-y-4 text-sm text-gray-400"><li><Link href="/" className="hover:text-[#D4A373]">جميع المنتجات</Link></li><li><Link href="#" className="hover:text-[#D4A373]">حبوب القهوة</Link></li><li><Link href="#" className="hover:text-[#D4A373]">أدوات التقطير</Link></li></ul>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-white mb-6 uppercase tracking-wider">حسابي</h3>
-          <ul className="space-y-4 text-sm text-gray-400"><li><Link href="/login" className="hover:text-[#D4A373]">تسجيل الدخول</Link></li><li><Link href="/account" className="hover:text-[#D4A373]">طلباتي</Link></li><li><Link href="/cart" className="hover:text-[#D4A373]">سلة المشتريات</Link></li></ul>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-white mb-6 uppercase tracking-wider">تواصل معنا</h3>
-          <ul className="space-y-4 text-sm text-gray-400"><li className="flex items-center gap-3"><Phone className="w-4 h-4 text-[#D4A373]" /><span dir="ltr">{content.phone}</span></li><li className="flex items-center gap-3"><Mail className="w-4 h-4 text-[#D4A373]" />{content.email}</li></ul>
+          <form className="flex w-full md:w-auto bg-white/10 rounded-md overflow-hidden border border-white/20" onSubmit={(e) => e.preventDefault()}>
+            <input 
+              type="email" 
+              placeholder="عنوان البريد الإلكتروني" 
+              className="bg-transparent text-white px-4 py-3 outline-none w-full md:w-64 placeholder:text-gray-400 text-sm" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button type="submit" className="bg-[#A44222] text-white px-6 py-3 font-bold text-sm hover:bg-[#852e14] transition-colors">
+              سجل
+            </button>
+          </form>
         </div>
       </div>
-      <div className="container mx-auto px-6 md:px-10 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-gray-500 text-xs font-medium">{content.copyright}</p>
-        <div className="flex gap-4 text-xs text-gray-500 font-medium"><Link href="#" className="hover:text-white">سياسة الخصوصية</Link><Link href="#" className="hover:text-white">الشروط والأحكام</Link></div>
+
+      {/* الروابط الأساسية */}
+      <div className="container mx-auto px-4 md:px-8 max-w-6xl grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-center md:text-right">
+        <div>
+          <img src="/images/logo.jpg" alt="الغرباوي" className="h-16 mx-auto md:mx-0 mb-4 bg-white p-1 rounded-md" />
+          <p className="text-gray-400 text-sm leading-relaxed">{content.about}</p>
+        </div>
+        <div>
+          <h4 className="font-bold mb-4">روابط سريعة</h4>
+          <ul className="space-y-2 text-sm text-gray-400">
+            <li><Link href="/" className="hover:text-white">الرئيسية</Link></li>
+            <li><Link href="#products" className="hover:text-white">المنتجات</Link></li>
+            <li><Link href="#" className="hover:text-white">اتصل بنا</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="font-bold mb-4">حسابي</h4>
+          <ul className="space-y-2 text-sm text-gray-400">
+            <li><Link href="/login" className="hover:text-white">تسجيل الدخول</Link></li>
+            <li><Link href="/account" className="hover:text-white">تتبع الطلب</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="font-bold mb-4">تواصل معنا</h4>
+          <ul className="space-y-2 text-sm text-gray-400">
+            <li className="flex items-center justify-center md:justify-start gap-2"><Phone className="w-4 h-4" /> {content.phone}</li>
+            <li className="flex items-center justify-center md:justify-start gap-2"><Mail className="w-4 h-4" /> {content.email}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 md:px-8 max-w-6xl pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+        <p>{content.copyright}</p>
+        <div className="flex gap-4">
+          <Link href="#" className="hover:text-white">سياسة الخصوصية</Link>
+          <Link href="#" className="hover:text-white">الشروط والأحكام</Link>
+        </div>
       </div>
     </footer>
   );

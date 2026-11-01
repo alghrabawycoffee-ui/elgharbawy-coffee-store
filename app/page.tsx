@@ -2,6 +2,9 @@ import { Suspense } from 'react'
 import { getSupabase } from '../lib/supabase'
 import HeroSlider from '../components/HeroSlider'
 import ProductCard from '../components/ProductCard'
+import Features from '../components/Features'
+import BrandStory from '../components/BrandStory'
+import Testimonials from '../components/Testimonials'
 import Link from 'next/link'
 import { X } from 'lucide-react'
 
@@ -28,12 +31,12 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8">
       
-      {/* الأقسام (خطوط بسيطة زي بن مصر) */}
+      {/* الأقسام */}
       {categories.length > 0 && (
         <div className="py-6 border-b border-gray-200">
           <div className="flex overflow-x-auto gap-6 pb-2 hide-scrollbar justify-start md:justify-center">
             {categories.map((cat) => (
-              <Link href={`/?category=${cat.id}#products`} key={cat.id} className={`text-sm font-bold whitespace-nowrap pb-2 border-b-2 transition-colors ${categoryId === cat.id ? 'text-[#D35400] border-[#D35400]' : 'text-gray-600 border-transparent hover:text-[#D35400]'}`}>
+              <Link href={`/?category=${cat.id}#products`} key={cat.id} className={`text-sm font-bold whitespace-nowrap pb-2 border-b-2 transition-colors ${categoryId === cat.id ? 'text-[#A44222] border-[#A44222]' : 'text-gray-600 border-transparent hover:text-[#A44222]'}`}>
                 {cat.name}
               </Link>
             ))}
@@ -46,11 +49,11 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
         <div className="flex justify-between items-end mb-8 border-b border-gray-200 pb-4">
           <h2 className="text-3xl md:text-4xl font-black text-gray-900">{title}</h2>
           {(categoryId || searchQuery) ? (
-            <Link href="/#products" className="flex items-center gap-1 text-sm font-bold text-[#D35400] hover:underline">
+            <Link href="/#products" className="flex items-center gap-1 text-sm font-bold text-[#A44222] hover:underline">
               <X className="w-4 h-4" /> مسح الفلتر
             </Link>
           ) : (
-            <Link href="#products" className="text-sm font-bold text-[#D35400] hover:underline">عرض الكل</Link>
+            <Link href="#products" className="text-sm font-bold text-[#A44222] hover:underline">عرض الكل</Link>
           )}
         </div>
 
@@ -59,7 +62,7 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
             <p className="text-lg font-bold text-gray-500">لا توجد منتجات.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
             {products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -77,6 +80,11 @@ export default function Home({ searchParams }: { searchParams: Promise<{ [key: s
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري التحميل...</div>}>
         <PageContent searchParams={searchParams} />
       </Suspense>
+      
+      {/* الأجزاء الجديدة زي بن مصر */}
+      <Features />
+      <BrandStory />
+      <Testimonials />
     </main>
   )
 }

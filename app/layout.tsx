@@ -6,7 +6,7 @@ import "./globals.css";
 import { Toaster } from 'react-hot-toast';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Suspense } from 'react'; // استيراد Suspense
+import { Suspense } from 'react';
 
 const cairo = Cairo({ 
   subsets: ["arabic"],
@@ -35,7 +35,6 @@ export default function RootLayout({
           }} 
         />
         
-        {/* هنا السر: لفينا الهيدر بـ Suspense عشان البناء ميفشلش */}
         <Suspense fallback={<div className="h-20 bg-white shadow-sm w-full"></div>}>
           <Header /> 
         </Suspense>

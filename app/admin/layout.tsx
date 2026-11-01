@@ -1,6 +1,5 @@
 import AdminSidebar from "@/components/AdminSidebar";
 
-// السطر ده بيمنع Next.js من محاولة عمل Prerender لأي صفحة تحت /admin
 export const dynamic = 'force-dynamic';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

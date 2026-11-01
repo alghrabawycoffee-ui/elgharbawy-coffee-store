@@ -47,7 +47,7 @@ export default function Header() {
         {/* اللوجو - المسار الصح */}
         <Link href="/" className="shrink-0 flex justify-center">
           <img 
-            src="/images/logo.png" 
+            src="/images/logo.jpg" 
             alt="الغرباوي" 
             className="h-16 md:h-20 object-contain drop-shadow-sm" 
           />

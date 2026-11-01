@@ -11,7 +11,7 @@ import { Suspense } from 'react';
 
 const cairo = Cairo({ 
   subsets: ["arabic"],
-  weight: ["400", "600", "700", "800", "900"],
+   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-cairo",
 });
 

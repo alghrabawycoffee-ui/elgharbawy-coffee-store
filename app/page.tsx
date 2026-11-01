@@ -80,11 +80,11 @@ export default function Home() {
   return (
     <main className="bg-[#FDFBF7]">
       <HeroSlider />
-      <Features />
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري تحميل الصفحة...</div>}>
         <PageContent />
       </Suspense>
       <AppPromo />
+      <Features />
     </main>
   )
 }

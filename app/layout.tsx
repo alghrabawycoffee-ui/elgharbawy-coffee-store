@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const cairo = Cairo({ 
   subsets: ["arabic"],

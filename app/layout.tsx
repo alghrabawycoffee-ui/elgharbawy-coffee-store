@@ -4,10 +4,9 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-
-// استيراد CSS الخاص بالسلايدر هنا عشان نمنع مشكلة التكرار
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { Suspense } from 'react'; // استيراد Suspense
 
 const cairo = Cairo({ 
   subsets: ["arabic"],
@@ -28,14 +27,23 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={`${cairo.variable} antialiased bg-[#FDFBF7] flex flex-col min-h-screen`}>
-        <Toaster position="bottom-center" toastOptions={{
-          style: { fontFamily: 'var(--font-cairo)', direction: 'rtl' },
-          success: { iconTheme: { primary: '#8A3324', secondary: '#fff' } }
-        }} />
-        <Header /> 
+        <Toaster 
+          position="bottom-center" 
+          toastOptions={{
+            style: { fontFamily: 'var(--font-cairo)', direction: 'rtl' },
+            success: { iconTheme: { primary: '#8A3324', secondary: '#fff' } }
+          }} 
+        />
+        
+        {/* هنا السر: لفينا الهيدر بـ Suspense عشان البناء ميفشلش */}
+        <Suspense fallback={<div className="h-20 bg-white shadow-sm w-full"></div>}>
+          <Header /> 
+        </Suspense>
+        
         <main className="flex-grow">
           {children}
         </main>
+        
         <Footer />
       </body>
     </html>

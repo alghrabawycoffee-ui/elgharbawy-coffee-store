@@ -1,13 +1,12 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
-
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase';
 import { Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function AdminBanners() {
+// 1. المكون الداخلي الذي يحتوي على كل المنطق
+function BannersContent() {
   const [banners, setBanners] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ tag: '', title: '', subtitle: '', description: '', image_url: '', show_timer: false });
@@ -47,6 +46,7 @@ export default function AdminBanners() {
 
   return (
     <div className="p-8">
+      {/* ... نفس محتوى الصفحة السابق ... */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-black text-[#5A1F14]">إدارة بنرات العروض</h1>
         <button onClick={() => setShowForm(!showForm)} className="bg-[#8A3324] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[#5A1F14]">
@@ -56,6 +56,7 @@ export default function AdminBanners() {
 
       {showForm && (
         <form onSubmit={handleAdd} className="bg-white p-6 rounded-2xl shadow-sm mb-8 space-y-4">
+          {/* ... حقول الفورم ... */}
           <div className="grid grid-cols-2 gap-4">
             <div><label className="block text-sm font-bold mb-1">التاج (مثال: عرض محدود)</label><input required value={formData.tag} onChange={e => setFormData({...formData, tag: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
             <div><label className="block text-sm font-bold mb-1">العنوان الرئيسي</label><input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
@@ -82,5 +83,14 @@ export default function AdminBanners() {
         ))}
       </div>
     </div>
+  );
+}
+
+// 2. المكون الرئيسي الذي يغلف المحتوى بـ Suspense
+export default function AdminBannersPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">جاري تحميل الصفحة...</div>}>
+      <BannersContent />
+    </Suspense>
   );
 }

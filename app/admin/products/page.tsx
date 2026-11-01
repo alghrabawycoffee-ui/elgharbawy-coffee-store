@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Edit } from 'lucide-react'; // ضفنا Edit
 import toast from 'react-hot-toast';
 
 export default function AdminProducts() {
@@ -49,9 +49,16 @@ export default function AdminProducts() {
             {products.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50">
                 <td className="p-4 font-bold">{product.name}</td>
-                <td className="p-4 font-bold text-[#8A3324]">{product.price} ج.م</td>
+                <td className="p-4 font-bold text-[#8A3324]">
+                  {product.price} ج.م
+                  {product.old_price && <span className="block text-xs text-gray-400 line-through">{product.old_price} ج.م</span>}
+                </td>
                 <td className="p-4">{product.stock}</td>
-                <td className="p-4">
+                <td className="p-4 flex gap-2">
+                  {/* زرار التعديل */}
+                  <Link href={`/admin/products/edit/${product.id}`} className="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors">
+                    <Edit className="w-5 h-5" />
+                  </Link>
                   <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
                     <Trash2 className="w-5 h-5" />
                   </button>

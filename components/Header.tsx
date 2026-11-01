@@ -1,79 +1,124 @@
 "use client";
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
-
-import { ArrowLeft } from 'lucide-react';
+import { Search, ShoppingBag, User, LogOut, LayoutDashboard, Menu } from 'lucide-react';
+import { useCartStore } from '../store/cartStore';
+import { useEffect, useState } from 'react';
 import { getSupabase } from '../lib/supabase';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
-export default function HeroSlider() {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [banners, setBanners] = useState<any[]>([]);
+export default function Header() {
+  const items = useCartStore((state) => state.items);
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [topBarText, setTopBarText] = useState('🚚 شحن مجاني للطلبات فوق 500 ج.م');
+  const router = useRouter();
 
   useEffect(() => {
     const supabase = getSupabase();
-    const fetchBanners = async () => {
-      const { data } = await supabase.from('banners').select('*').eq('is_active', true).order('created_at');
-      if (data) setBanners(data);
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+        if (profile?.role === 'admin') setIsAdmin(true);
+      }
     };
-    fetchBanners();
-
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 3);
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetDate.getTime() - now;
-      if (distance < 0) { clearInterval(interval); return; }
-      setTimeLeft({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000),
-      });
-    }, 1000);
-    return () => clearInterval(interval);
+    getUser();
+    
+    const fetchTopBar = async () => {
+      const { data } = await supabase.from('site_content').select('value').eq('key', 'top_bar').single();
+      if (data) setTopBarText(data.value);
+    };
+    fetchTopBar();
+    
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user || null);
+      if (!session?.user) setIsAdmin(false);
+      else {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+        if (profile?.role === 'admin') setIsAdmin(true);
+      }
+    });
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
-  if (banners.length === 0) return <div className="h-[400px] bg-gray-200 animate-pulse mx-4 md:mx-8 mt-4 rounded-[2rem]"></div>;
+  const handleLogout = async () => {
+    const supabase = getSupabase();
+    await supabase.auth.signOut();
+    toast.success('تم تسجيل الخروج');
+    router.push('/');
+    router.refresh();
+  };
 
   return (
-    <section className="mx-4 md:mx-8 mt-4 rounded-[2rem] overflow-hidden shadow-2xl h-[600px] md:h-[650px] relative bg-[#1A120B]">
-      <Swiper modules={[Autoplay, Pagination]} spaceBetween={0} slidesPerView={1} loop={true} autoplay={{ delay: 5000, disableOnInteraction: false }} pagination={{ clickable: true }} className="w-full h-full">
-        {banners.map((banner) => (
-          <SwiperSlide key={banner.id}>
-            <div className="relative w-full h-full flex items-center">
-              <div className="absolute inset-0 z-0">
-                <img src={banner.image_url} alt="bg" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-l from-[#1A120B]/95 via-[#1A120B]/70 to-[#1A120B]/30"></div>
-              </div>
-              <div className="relative z-10 w-full px-6 md:px-20 flex flex-col items-center md:items-start text-center md:text-right mt-20 md:mt-0">
-                <span className="bg-white/10 backdrop-blur-md text-[#D4A373] border border-white/20 text-xs md:text-sm font-bold px-4 py-2 rounded-full mb-6 flex items-center gap-2 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>{banner.tag}
-                </span>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[1.2] mb-4 tracking-tight drop-shadow-lg">
-                  {banner.title} <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4A373] to-[#FDFBF7]">{banner.subtitle}</span>
-                </h1>
-                <p className="text-gray-300 text-sm md:text-lg mb-8 max-w-lg leading-relaxed font-medium drop-shadow-md">{banner.description}</p>
-                {banner.show_timer && (
-                  <div className="flex gap-2 md:gap-4 mb-10">
-                    {Object.entries(timeLeft).map(([unit, value]) => (
-                      <div key={unit} className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-3 md:p-4 text-center min-w-[65px] md:min-w-[80px] shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
-                        <span className="block text-2xl md:text-4xl font-black text-white leading-none mb-1">{value}</span>
-                        <span className="text-[10px] md:text-xs text-gray-300 font-bold uppercase tracking-wider">{unit === 'days' ? 'يوم' : unit === 'hours' ? 'ساعة' : unit === 'minutes' ? 'دقيقة' : 'ثانية'}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <Link href="#products" className="group bg-[#8A3324] text-white font-bold text-lg px-10 py-4 rounded-full transition-all duration-300 shadow-[0_10px_20px_rgba(138,51,36,0.4)] hover:bg-white hover:text-[#1A120B] flex items-center gap-3 hover:-translate-y-1">
-                  اكتشف الآن <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all">
+      {/* الشريط العلوي */}
+      <div className="bg-[#1A120B] text-[#D4A373] text-center py-2 text-[11px] md:text-xs font-bold tracking-wider">
+        {topBarText}
+      </div>
+      
+      <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+        
+        {/* الأيقونات والسلة */}
+        <div className="flex gap-5 text-gray-800 items-center">
+          <button className="md:hidden"><Menu className="w-6 h-6" /></button>
+          
+          {/* أيقونة السلة - هنا */}
+          <Link href="/cart" className="relative group hidden md:block">
+            <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 cursor-pointer group-hover:text-[#8A3324] transition-colors" strokeWidth={1.5} />
+            {totalItems > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-[#8A3324] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+          
+          {user ? (
+            <div className="flex items-center gap-4 border-r border-gray-200 pr-4">
+              {isAdmin && (
+                <Link href="/admin" className="flex items-center gap-1.5 text-xs font-bold text-[#8A3324] hover:text-[#5A1F14] transition-colors bg-[#8A3324]/10 px-3 py-1.5 rounded-full">
+                  <LayoutDashboard className="w-4 h-4" /> لوحة التحكم
                 </Link>
-              </div>
+              )}
+              <Link href="/account" className="flex items-center gap-1.5 text-sm font-bold text-gray-700 hover:text-[#8A3324] transition-colors">
+                <User className="w-5 h-5" strokeWidth={1.5} />
+                <span className="hidden md:inline">حسابي</span>
+              </Link>
+              <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 transition-colors" title="تسجيل الخروج">
+                <LogOut className="w-5 h-5" strokeWidth={1.5} />
+              </button>
             </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <style jsx global>{`.swiper-pagination-bullet { background-color: #fff; opacity: 0.3; width: 8px; height: 8px; transition: 0.3s; } .swiper-pagination-bullet-active { background-color: #D4A373; opacity: 1; width: 30px; border-radius: 4px; }`}</style>
-    </section>
+          ) : (
+            <Link href="/login" className="flex items-center gap-1.5 text-sm font-bold text-gray-700 hover:text-[#8A3324] transition-colors border-r border-gray-200 pr-4">
+              <User className="w-5 h-5" strokeWidth={1.5} />
+              <span className="hidden md:inline">دخول</span>
+            </Link>
+          )}
+        </div>
+
+        {/* اللوجو */}
+        <Link href="/" className="text-2xl md:text-4xl font-black text-[#8A3324] tracking-tighter">
+          الغرباوي
+        </Link>
+
+        {/* البحث */}
+        <div className="relative w-1/3 hidden md:block max-w-sm">
+          <input type="text" placeholder="ابحث عن قهوة، أدوات..." className="w-full bg-gray-100/50 border-none rounded-full py-2.5 px-10 focus:outline-none focus:ring-2 focus:ring-[#D4A373]/50 transition-all text-sm font-medium" />
+          <Search className="w-4 h-4 absolute right-4 top-3 text-gray-400" />
+        </div>
+        
+        {/* سلة الموبايل */}
+        <Link href="/cart" className="relative group md:hidden">
+          <ShoppingBag className="w-6 h-6 text-gray-800" strokeWidth={1.5} />
+          {totalItems > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 bg-[#8A3324] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+              {totalItems}
+            </span>
+          )}
+        </Link>
+      </div>
+    </header>
   );
 }

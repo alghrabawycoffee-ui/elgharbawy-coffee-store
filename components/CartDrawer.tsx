@@ -8,27 +8,36 @@ import { getSupabase } from '../lib/supabase';
 export default function CartDrawer() {
   const { items, isCartOpen, closeCart, removeFromCart, updateQuantity } = useCartStore();
   
-  // حالة إعدادات الشحن المجاني
-  const [shippingConfig, setShippingConfig] = useState({
-    show: true,
+  // حالة إعدادات السلة (الشحن المجاني وسعر الشحن)
+  const [cartConfig, setCartConfig] = useState({
+    showFreeShipping: true,
     threshold: 500,
     text: 'أضف بقيمة {amount} ج.م للحصول على شحن مجاني',
-    success: 'مبروك! لقد حصلت على شحن مجاني 🎉'
+    successText: 'مبروك! لقد حصلت على شحن مجاني 🎉',
+    shippingCost: 50
   });
 
   useEffect(() => {
     const fetchConfig = async () => {
       const supabase = getSupabase();
-      const { data } = await supabase.from('site_content').select('key, value').in('key', ['show_free_shipping', 'free_shipping_threshold', 'free_shipping_text', 'free_shipping_success_text']);
+      const { data } = await supabase.from('site_content').select('key, value').in('key', [
+        'show_free_shipping', 
+        'free_shipping_threshold', 
+        'free_shipping_text', 
+        'free_shipping_success_text',
+        'shipping_cost'
+      ]);
       
       if (data) {
         const config: any = {};
         data.forEach(item => { config[item.key] = item.value; });
-        setShippingConfig({
-          show: config.show_free_shipping === 'true',
+        
+        setCartConfig({
+          showFreeShipping: config.show_free_shipping === 'true',
           threshold: Number(config.free_shipping_threshold) || 500,
           text: config.free_shipping_text || 'أضف بقيمة {amount} ج.م للحصول على شحن مجاني',
-          success: config.free_shipping_success_text || 'مبروك! لقد حصلت على شحن مجاني 🎉'
+          successText: config.free_shipping_success_text || 'مبروك! لقد حصلت على شحن مجاني 🎉',
+          shippingCost: Number(config.shipping_cost) || 50
         });
       }
     };
@@ -36,17 +45,18 @@ export default function CartDrawer() {
   }, []);
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal >= shippingConfig.threshold ? 0 : 50; 
+  
+  // حساب الشحن بناءً على الإعدادات
+  const isFreeShipping = subtotal >= cartConfig.threshold;
+  const shipping = isFreeShipping ? 0 : cartConfig.shippingCost; 
   const total = subtotal + shipping;
   
-  // حساب النسبة المئوية للشريط
-  const progress = Math.min((subtotal / shippingConfig.threshold) * 100, 100);
-  const amountLeft = shippingConfig.threshold - subtotal;
+  const progress = Math.min((subtotal / cartConfig.threshold) * 100, 100);
+  const amountLeft = cartConfig.threshold - subtotal;
   
-  // تجهيز النص ديناميكياً
-  const displayText = subtotal >= shippingConfig.threshold 
-    ? shippingConfig.success 
-    : shippingConfig.text.replace('{amount}', amountLeft.toString());
+  const displayText = isFreeShipping 
+    ? cartConfig.successText 
+    : cartConfig.text.replace('{amount}', amountLeft.toString());
 
   if (!isCartOpen) return null;
 
@@ -68,7 +78,7 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           
           {/* شريط الشحن المجاني الديناميكي */}
-          {shippingConfig.show && (
+          {cartConfig.showFreeShipping && (
             <div className="bg-[#FDFBF7] p-4 rounded-xl border border-gray-100 text-center">
               <p className="text-xs font-bold text-gray-600 mb-2">
                 {displayText}

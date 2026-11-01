@@ -7,23 +7,20 @@ import { getSupabase } from '../lib/supabase';
 
 export default function HeroSlider() {
   const [banners, setBanners] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const supabase = getSupabase();
     const fetchBanners = async () => {
       const { data } = await supabase.from('banners').select('*').eq('is_active', true).order('created_at');
       if (data) setBanners(data);
-      setLoading(false);
     };
     fetchBanners();
   }, []);
 
-  if (loading) return <div className="h-[500px] w-full bg-[#3E2723] animate-pulse"></div>;
   if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full h-[500px] md:h-[600px] bg-[#3E2723]">
+    <section className="relative w-full h-[400px] md:h-[500px] bg-[#3E2723]">
       <Swiper 
         modules={[Autoplay, EffectFade, Pagination]} 
         effect="fade"
@@ -37,22 +34,20 @@ export default function HeroSlider() {
         {banners.map((banner) => (
           <SwiperSlide key={banner.id} className="relative w-full h-full">
             
-            {/* الخلفية */}
             <div className="absolute inset-0 w-full h-full">
               <img src={banner.image_url} alt="bg" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40"></div>
+              <div className="absolute inset-0 bg-black/30"></div>
             </div>
             
-            {/* المحتوى (نفس تقسيمة بن مصر) */}
             <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-16 flex flex-col justify-center items-start text-right">
-              <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.3] mb-4 drop-shadow-lg">
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-[1.3] mb-4 drop-shadow-md">
                 {banner.title} <br />
-                {banner.subtitle}
+                <span className="text-white">{banner.subtitle}</span>
               </h1>
-              <p className="text-gray-100 text-sm md:text-lg mb-8 max-w-lg leading-relaxed drop-shadow-md">
+              <p className="text-gray-100 text-sm md:text-base mb-8 max-w-md leading-relaxed drop-shadow-sm">
                 {banner.description}
               </p>
-              <Link href="#products" className="bg-[#D35400] text-white px-8 py-3 rounded-md font-bold text-lg hover:bg-[#A04000] transition-colors shadow-lg">
+              <Link href="#products" className="bg-[#A44222] text-white px-8 py-3 rounded-md font-bold text-sm md:text-base hover:bg-[#852e14] transition-colors">
                 متجر القهوة
               </Link>
             </div>
@@ -60,9 +55,9 @@ export default function HeroSlider() {
         ))}
       </Swiper>
       <style jsx global>{`
-        .swiper-pagination { bottom: 20px !important; text-align: left !important; padding-left: 50px !important; }
-        .swiper-pagination-bullet { background-color: #fff; opacity: 0.5; width: 8px; height: 8px; }
-        .swiper-pagination-bullet-active { background-color: #D35400; opacity: 1; width: 25px; border-radius: 4px; }
+        .swiper-pagination { bottom: 20px !important; text-align: left !important; padding-left: 60px !important; }
+        .swiper-pagination-bullet { background-color: #fff; opacity: 0.5; }
+        .swiper-pagination-bullet-active { background-color: #A44222; opacity: 1; width: 25px; border-radius: 4px; }
       `}</style>
     </section>
   );

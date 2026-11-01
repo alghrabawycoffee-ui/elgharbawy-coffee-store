@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import CartDrawer from "../components/CartDrawer"; // استدعاء السلة
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
@@ -26,12 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${cairo.variable} antialiased bg-[#FDFBF7] flex flex-col min-h-screen`}>
+      <body className={`${cairo.variable} antialiased bg-[#FAFAFA] flex flex-col min-h-screen`}>
         <Toaster 
           position="bottom-center" 
           toastOptions={{
             style: { fontFamily: 'var(--font-cairo)', direction: 'rtl' },
-            success: { iconTheme: { primary: '#8A3324', secondary: '#fff' } }
+            success: { iconTheme: { primary: '#A44222', secondary: '#fff' } }
           }} 
         />
         
@@ -44,6 +45,9 @@ export default function RootLayout({
         </main>
         
         <Footer />
+        
+        {/* السلة الجانبية هنا عشان تظهر في كل الصفحات */}
+        <CartDrawer /> 
       </body>
     </html>
   );

@@ -1,18 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --bg-main: #FAFAFA;       /* أبيض مائل للرمادي الفاتح جداً */
-  --text-dark: #1A120B;     /* بني قهوة غامق */
-  --brand-color: #A44222;   /* لون التراكوتا من اللوجو */
+  --bg-main: #FAFAFA;
+  --brand-color: #A44222;
 }
 
 body {
   background-color: var(--bg-main);
-  color: var(--text-dark);
+  color: #1A120B;
   font-family: var(--font-cairo), sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-html { scroll-behavior: smooth; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* أنيميشن السلة */
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in {
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

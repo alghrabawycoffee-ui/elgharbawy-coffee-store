@@ -4,6 +4,7 @@ import HeroSlider from '../components/HeroSlider'
 import Features from '../components/Features'
 import ProductCard from '../components/ProductCard'
 import AppPromo from '../components/AppPromo'
+import BrandStory from '../components/BrandStory' // استدعاء قصة البراند
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -32,46 +33,50 @@ async function PageContent() {
 
   return (
     <>
-      {/* 1. قسم الأقسام (زي التطبيقات) */}
-      <div className="container mx-auto px-4 md:px-10 py-16">
+      {/* 1. الأقسام (شكل كبسولات فخمة) */}
+      <div className="container mx-auto px-4 md:px-10 pt-20 pb-10">
         <div className="flex justify-between items-end mb-8">
           <h2 className="text-2xl md:text-3xl font-black text-[#1A120B]">{content.categoriesTitle}</h2>
         </div>
-        <div className="flex gap-4 md:gap-8 overflow-x-auto pb-4 hide-scrollbar snap-x">
+        <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 hide-scrollbar snap-x">
           {categories.map((cat, i) => (
-            <Link href="#products" key={i} className="flex flex-col items-center gap-4 snap-center shrink-0 group">
-              <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border-[3px] border-transparent group-hover:border-[#D4A373] transition-all duration-300 group-hover:-translate-y-2 shadow-[0_8px_30px_rgb(0,0,0,0.08)] bg-white p-1">
-                <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500" />
+            <Link href="#products" key={i} className="snap-center shrink-0 group">
+              <div className="flex items-center gap-3 bg-white border border-gray-100 hover:border-[#D4A373] rounded-full p-2 pr-6 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8A3324] transition-colors">
+                  <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover" />
+                </div>
+                <span className="text-sm font-bold text-gray-700 group-hover:text-[#8A3324] transition-colors">{cat.name}</span>
               </div>
-              <span className="text-xs md:text-sm font-bold text-gray-700 group-hover:text-[#8A3324] transition-colors">{cat.name}</span>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* 2. المنتجات */}
-      <div id="products" className="bg-white py-16 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+      {/* 2. المنتجات (شكل المعرض) */}
+      <div id="products" className="bg-white py-20 rounded-[4rem] shadow-[0_-20px_50px_-20px_rgba(0,0,0,0.05)] relative z-20">
         <div className="container mx-auto md:px-6">
-          <div className="flex justify-between items-end mb-10 px-4 md:px-4">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-black text-[#1A120B]">{content.productsTitle}</h2>
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 px-4 md:px-4 gap-4">
+            <div className="text-center md:text-right">
+              <h2 className="text-4xl md:text-5xl font-black text-[#1A120B] tracking-tight">{content.productsTitle}</h2>
               <p className="text-gray-500 mt-3 text-sm md:text-base font-medium">{content.productsSubtitle}</p>
             </div>
-            <Link href="#" className="hidden md:flex items-center gap-2 text-sm font-bold text-[#8A3324] hover:gap-3 transition-all mb-1">
+            <Link href="#" className="flex items-center gap-2 text-sm font-black bg-[#FDFBF7] px-6 py-3 rounded-full text-[#8A3324] hover:bg-[#8A3324] hover:text-white transition-all">
               عرض الكل <ArrowLeft className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 md:px-4 py-4 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-8 md:overflow-visible hide-scrollbar">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10 px-4 md:px-4">
             {products.map((product: any) => (
-              <div key={product.id} className="min-w-[75vw] sm:min-w-[45vw] md:min-w-0 snap-center">
-                <ProductCard product={product} />
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))}
-            {products.length === 0 && <p className="text-center w-full text-gray-500 font-bold py-10">لا توجد منتجات حالياً.</p>}
+            {products.length === 0 && <p className="text-center w-full col-span-full text-gray-500 font-bold py-10">لا توجد منتجات حالياً.</p>}
           </div>
         </div>
       </div>
+
+      {/* 3. قصة البراند (الجزء اللي بيعمل الـ WOW) */}
+      <BrandStory />
+
     </>
   );
 }
@@ -84,7 +89,7 @@ export default function Home() {
         <PageContent />
       </Suspense>
       <AppPromo />
-      <Features />
+      <Features /> 
     </main>
   )
 }

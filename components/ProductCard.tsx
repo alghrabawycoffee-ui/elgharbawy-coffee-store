@@ -15,45 +15,43 @@ export default function ProductCard({ product }: { product: any }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-3 md:p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full border border-gray-100">
+    <div className="group relative flex flex-col items-center bg-white p-3 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500">
       
-      {/* الصورة - مقاس ثابت ومضمون */}
-      <Link href={`/product/${product.id}`} className="relative w-full aspect-square bg-[#FDFBF7] rounded-xl overflow-hidden mb-4 block group">
+      {/* الصورة - بدون حدود، خلفية دافية */}
+      <Link href={`/product/${product.id}`} className="relative w-full aspect-square bg-[#F4EFEA] rounded-[1.5rem] flex items-center justify-center p-6 overflow-hidden mb-4">
+        {product.old_price && (
+          <div className="absolute top-3 right-3 bg-[#8A3324] text-white text-[10px] font-black px-3 py-1 rounded-full z-10 shadow-sm">
+            خصم
+          </div>
+        )}
         <img 
           src={product.image_url || fallbackImage} 
           alt={product.name}
-          className="w-full h-full object-contain p-4 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-out"
         />
-        {product.old_price && (
-          <span className="absolute top-2 right-2 bg-[#8A3324] text-white text-[10px] font-bold px-2 py-1 rounded-md">
-            خصم
-          </span>
-        )}
       </Link>
 
-      {/* التفاصيل - مرتبة تحت بعضها */}
-      <div className="flex flex-col flex-grow text-center">
+      {/* التفاصيل */}
+      <div className="text-center w-full px-2 pb-2 flex flex-col flex-grow">
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-sm md:text-base font-bold text-gray-800 mb-2 truncate hover:text-[#8A3324] transition-colors">
+          <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2 truncate group-hover:text-[#8A3324] transition-colors">
             {product.name}
           </h3>
         </Link>
         
-        <div className="mt-auto pt-2">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="text-base md:text-lg font-black text-[#8A3324]">{product.price} ج.م</span>
-            {product.old_price && (
-              <span className="text-xs text-gray-400 line-through">{product.old_price}</span>
-            )}
-          </div>
-          
-          <button 
-            onClick={handleAdd}
-            className="w-full bg-[#1A120B] text-white text-xs md:text-sm font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-[#8A3324] transition-colors"
-          >
-            <Plus className="w-4 h-4" /> أضف للسلة
-          </button>
+        <div className="flex items-center justify-center gap-2 mt-auto mb-4">
+          <span className="text-lg font-black text-[#8A3324]">{product.price} <span className="text-xs">ج.م</span></span>
+          {product.old_price && (
+            <span className="text-xs text-gray-400 line-through font-bold">{product.old_price}</span>
+          )}
         </div>
+
+        <button 
+          onClick={handleAdd}
+          className="w-full bg-[#1A120B] text-white text-sm font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#8A3324] transition-colors"
+        >
+          <Plus className="w-4 h-4" /> أضف للسلة
+        </button>
       </div>
     </div>
   );

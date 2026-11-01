@@ -16,7 +16,7 @@ export default function BrandStory() {
               className="relative z-10 w-full h-[400px] md:h-[500px] object-cover rounded-[3rem] shadow-2xl"
             />
             {/* كارت عائم صغير */}
-            <div className="absolute -bottom-8 -right-8 z-20 bg-white p-6 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-4 animate-[float_4s_ease-in-out_infinite]">
+            <div className="absolute -bottom-8 -right-8 z-20 bg-white p-6 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-4 animate-float">
               <div className="bg-[#8A3324] p-3 rounded-full text-white"><Award className="w-6 h-6" /></div>
               <div>
                 <p className="text-sm font-black text-gray-900">أجود أنواع البن</p>
@@ -49,13 +49,6 @@ export default function BrandStory() {
 
         </div>
       </div>
-      <style jsx global>{`
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-          100% { transform: translateY(0px); }
-        }
-      `}</style>
     </section>
   );
 }

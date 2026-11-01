@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { getSupabase } from '../lib/supabase'
 import HeroSlider from '../components/HeroSlider'
-import Features from '../components/Features'
 import ProductCard from '../components/ProductCard'
 import AppPromo from '../components/AppPromo'
 import BrandStory from '../components/BrandStory' 
@@ -10,40 +9,34 @@ import { ArrowLeft } from 'lucide-react'
 
 async function PageContent() {
   const supabase = getSupabase(); 
-  
-  // جلب المنتجات والأقسام والنصوص مع بعض
   const [productsRes, contentRes, categoriesRes] = await Promise.all([
     supabase.from('products').select('*').order('created_at', { ascending: false }),
-    supabase.from('site_content').select('key, value').in('key', ['categories_title', 'products_title', 'products_subtitle']),
-    supabase.from('categories').select('*') // جلب الأقسام
+    supabase.from('site_content').select('key, value').in('key', ['products_title', 'products_subtitle']),
+    supabase.from('categories').select('*')
   ]);
 
   const products = productsRes.data || [];
   const contentData = contentRes.data || [];
-  const categories = categoriesRes.data || []; // تخزين الأقسام
+  const categories = categoriesRes.data || [];
   
   const content = {
-    categoriesTitle: contentData.find(c => c.key === 'categories_title')?.value || 'تسوق حسب القسم',
     productsTitle: contentData.find(c => c.key === 'products_title')?.value || 'الأكثر مبيعاً',
     productsSubtitle: contentData.find(c => c.key === 'products_subtitle')?.value || 'اكتشف تشكيلتنا المختارة بعناية',
   };
 
   return (
     <>
-      {/* 1. الأقسام (بقت ديناميكية) */}
+      {/* الأقسام - شكل كبسولات أنيق */}
       {categories.length > 0 && (
-        <div className="container mx-auto px-4 md:px-10 pt-20 pb-10">
-          <div className="flex justify-between items-end mb-8">
-            <h2 className="text-2xl md:text-3xl font-black text-[#1A120B]">{content.categoriesTitle}</h2>
-          </div>
-          <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 hide-scrollbar snap-x">
+        <div className="container mx-auto px-4 md:px-10 pt-24 pb-12">
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar justify-center">
             {categories.map((cat) => (
-              <Link href="#products" key={cat.id} className="snap-center shrink-0 group">
+              <Link href="#products" key={cat.id} className="group">
                 <div className="flex items-center gap-3 bg-white border border-gray-100 hover:border-[#D4A373] rounded-full p-2 pr-6 shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8A3324] transition-colors">
-                    <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
+                  <div className="w-10 h-10 rounded-full overflow-hidden">
+                    <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   </div>
-                  <span className="text-sm font-bold text-gray-700 group-hover:text-[#8A3324] transition-colors">{cat.name}</span>
+                  <span className="text-sm font-bold text-gray-800">{cat.name}</span>
                 </div>
               </Link>
             ))}
@@ -51,29 +44,20 @@ async function PageContent() {
         </div>
       )}
 
-      {/* 2. المنتجات */}
-      <div id="products" className="bg-white py-20 rounded-[4rem] shadow-[0_-20px_50px_-20px_rgba(0,0,0,0.05)] relative z-20">
-        <div className="container mx-auto md:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 px-4 md:px-4 gap-4">
-            <div className="text-center md:text-right">
-              <h2 className="text-4xl md:text-5xl font-black text-[#1A120B] tracking-tight">{content.productsTitle}</h2>
-              <p className="text-gray-500 mt-3 text-sm md:text-base font-medium">{content.productsSubtitle}</p>
-            </div>
-            <Link href="#" className="flex items-center gap-2 text-sm font-black bg-[#FDFBF7] px-6 py-3 rounded-full text-[#8A3324] hover:bg-[#8A3324] hover:text-white transition-all">
-              عرض الكل <ArrowLeft className="w-4 h-4" />
-            </Link>
-          </div>
+      {/* المنتجات */}
+      <div id="products" className="container mx-auto px-4 md:px-10 py-16">
+        <div className="flex flex-col items-center text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-black text-[#1A120B] tracking-tight mb-4">{content.productsTitle}</h2>
+          <p className="text-gray-500 text-base font-medium max-w-xl mx-auto">{content.productsSubtitle}</p>
+        </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10 px-4 md:px-4">
-            {products.map((product: any) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-            {products.length === 0 && <p className="text-center w-full col-span-full text-gray-500 font-bold py-10">لا توجد منتجات حالياً.</p>}
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+          {products.map((product: any) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       </div>
 
-      {/* 3. قصة البراند */}
       <BrandStory />
     </>
   );
@@ -87,7 +71,6 @@ export default function Home() {
         <PageContent />
       </Suspense>
       <AppPromo />
-      <Features /> 
     </main>
   )
 }

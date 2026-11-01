@@ -21,7 +21,7 @@ export default function HeroSlider() {
   if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full h-[85vh] md:h-[90vh] bg-[#1A120B] overflow-hidden">
+    <section className="relative w-full h-[600px] md:h-[700px] bg-[#1A120B]">
       <Swiper 
         modules={[Autoplay, EffectFade, Pagination]} 
         effect="fade"
@@ -35,35 +35,37 @@ export default function HeroSlider() {
         {banners.map((banner) => (
           <SwiperSlide key={banner.id} className="relative w-full h-full">
             
-            {/* الخلفية مع حركة الزووم */}
-            <div className="absolute inset-0 w-full h-full overflow-hidden">
+            {/* الخلفية */}
+            <div className="absolute inset-0 w-full h-full">
               <img 
                 src={banner.image_url} 
                 alt="bg" 
-                className="w-full h-full object-cover animate-slow-zoom opacity-80" 
+                className="w-full h-full object-cover" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A120B] via-[#1A120B]/40 to-transparent"></div>
+              {/* تظليل أقوى عشان النص يبان */}
+              <div className="absolute inset-0 bg-black/50"></div>
             </div>
             
-            {/* المحتوى */}
-            <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-16 flex flex-col justify-end pb-24 md:pb-32 items-start text-right">
+            {/* المحتوى - في النص بالظبط عشان يبقى متوازن */}
+            <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-16 flex flex-col justify-center items-center text-center">
               
-              <span className="bg-white/10 backdrop-blur-md text-white text-xs md:text-sm font-medium px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase border border-white/20">
+              <span className="bg-[#8B3A1A] text-white text-xs md:text-sm font-bold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase shadow-lg">
                 {banner.tag}
               </span>
               
-              <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-bold text-white leading-[1.1] mb-6 tracking-tight drop-shadow-2xl max-w-4xl">
+              {/* خط عنوان ضخم بس متحكم فيه */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-snug mb-6 max-w-4xl drop-shadow-lg">
                 {banner.title} <br />
-                <span className="text-[#D4A373] font-light">{banner.subtitle}</span>
+                <span className="text-[#D4A373]">{banner.subtitle}</span>
               </h1>
               
-              <p className="text-gray-200 text-sm md:text-lg mb-10 max-w-lg leading-relaxed font-light">
+              <p className="text-gray-200 text-sm md:text-base mb-10 max-w-xl leading-relaxed">
                 {banner.description}
               </p>
               
               <Link 
                 href="#products" 
-                className="group bg-white text-[#1A120B] px-10 py-4 rounded-full font-bold text-lg hover:bg-[#D4A373] hover:text-[#1A120B] transition-all duration-300 flex items-center gap-3 transform hover:scale-105"
+                className="group bg-white text-[#1A120B] px-10 py-4 rounded-full font-bold text-lg hover:bg-[#D4A373] transition-all duration-300 flex items-center gap-3 shadow-xl"
               >
                 تسوق الآن <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
               </Link>
@@ -72,7 +74,7 @@ export default function HeroSlider() {
         ))}
       </Swiper>
       <style jsx global>{`
-        .swiper-pagination { bottom: 40px !important; text-align: center !important; }
+        .swiper-pagination { bottom: 30px !important; }
         .swiper-pagination-bullet { background-color: #fff; opacity: 0.4; width: 8px; height: 8px; }
         .swiper-pagination-bullet-active { background-color: #D4A373; opacity: 1; width: 30px; border-radius: 4px; }
       `}</style>

@@ -36,6 +36,7 @@ export default function HeroSlider() {
     return () => clearInterval(interval);
   }, []);
 
+  // شكل التحميل لو البيانات لسه بتجيب
   if (loading) return <div className="h-[500px] md:h-[600px] mx-4 md:mx-8 mt-4 rounded-[2rem] bg-gray-200 animate-pulse"></div>;
   if (banners.length === 0) return null;
 
@@ -45,7 +46,7 @@ export default function HeroSlider() {
         modules={[Autoplay, Pagination]} 
         spaceBetween={0} 
         slidesPerView={1} 
-        loop={banners.length > 1} // يشتغل loop بس لو فيه أكتر من بنر
+        loop={banners.length > 1} // بيتفعل بس لو فيه أكتر من بنر
         autoplay={{ delay: 5000, disableOnInteraction: false }} 
         pagination={{ clickable: true }} 
         className="w-full h-full"
@@ -53,11 +54,14 @@ export default function HeroSlider() {
         {banners.map((banner) => (
           <SwiperSlide key={banner.id} className="h-full">
             <div className="relative w-full h-full flex items-center">
+              
+              {/* الخلفية */}
               <div className="absolute inset-0 z-0">
                 <img src={banner.image_url} alt="bg" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-l from-[#1A120B]/95 via-[#1A120B]/70 to-[#1A120B]/30"></div>
               </div>
               
+              {/* المحتوى */}
               <div className="relative z-10 w-full px-6 md:px-20 flex flex-col items-center md:items-start text-center md:text-right mt-20 md:mt-0">
                 <span className="bg-white/10 backdrop-blur-md text-[#D4A373] border border-white/20 text-xs md:text-sm font-bold px-4 py-2 rounded-full mb-6 flex items-center gap-2 shadow-lg">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>{banner.tag}
@@ -89,7 +93,6 @@ export default function HeroSlider() {
           </SwiperSlide>
         ))}
       </Swiper>
-      <style jsx global>{`.swiper-pagination-bullet { background-color: #fff; opacity: 0.3; width: 8px; height: 8px; transition: 0.3s; } .swiper-pagination-bullet-active { background-color: #D4A373; opacity: 1; width: 30px; border-radius: 4px; }`}</style>
     </section>
   );
 }

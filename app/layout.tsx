@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
+
+// استيراد CSS الخاص بالسلايدر هنا عشان نمنع مشكلة التكرار
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -25,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${cairo.variable} antialiased bg-[#FAFAFA] flex flex-col min-h-screen`}>
+      <body className={`${cairo.variable} antialiased bg-[#FDFBF7] flex flex-col min-h-screen`}>
         <Toaster position="bottom-center" toastOptions={{
           style: { fontFamily: 'var(--font-cairo)', direction: 'rtl' },
           success: { iconTheme: { primary: '#8A3324', secondary: '#fff' } }

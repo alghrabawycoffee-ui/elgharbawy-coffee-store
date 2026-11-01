@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { Search, ShoppingBag, User, LogOut } from 'lucide-react';
+import { Search, ShoppingBag, User, LogOut, LayoutDashboard } from 'lucide-react'; // ضفنا أيقونة الداشبورد
 import { useCartStore } from '../store/cartStore';
 import { useEffect, useState } from 'react';
 import { getSupabase } from '../lib/supabase';
@@ -11,16 +11,30 @@ export default function Header() {
   const items = useCartStore((state) => state.items);
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false); // حالة عشان نعرف هو أدمن ولا لأ
   const [topBarText, setTopBarText] = useState('🚚 شحن مجاني للطلبات فوق 500 ج.م | توصيل لجميع محافظات مصر');
   const router = useRouter();
 
   useEffect(() => {
     const supabase = getSupabase();
 
-    // جلب حالة المستخدم
+    // جلب حالة المستخدم والـ Role بتاعه
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+
+      // لو فيه مستخدم مسجل، هات الـ role بتاعه من جدول profiles
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile?.role === 'admin') {
+          setIsAdmin(true);
+        }
+      }
     };
     getUser();
 
@@ -32,8 +46,17 @@ export default function Header() {
     fetchTopBar();
 
     // متابعة تغيرات تسجيل الدخول
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user || null);
+      
+      // لو سجل خروج، اخفي زرار الأدمن
+      if (!session?.user) {
+        setIsAdmin(false);
+      } else {
+        // لو سجل دخول، اتأكد إنه أدمن
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+        if (profile?.role === 'admin') setIsAdmin(true);
+      }
     });
 
     return () => {
@@ -51,7 +74,6 @@ export default function Header() {
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm">
-      {/* الشريط العلوي الديناميكي */}
       <div className="bg-[#5A1F14] text-[#D4A373] text-center py-2 text-[10px] md:text-sm font-bold">
         {topBarText}
       </div>
@@ -70,10 +92,20 @@ export default function Header() {
           
           {user ? (
             <div className="flex items-center gap-3 md:gap-4 border-r pr-3 md:pr-4">
+              
+              {/* زرار لوحة التحكم - يظهر للأدمن بس */}
+              {isAdmin && (
+                <Link href="/admin" className="flex items-center gap-1 text-xs md:text-sm font-bold text-green-700 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors">
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden md:inline">لوحة التحكم</span>
+                </Link>
+              )}
+
               <Link href="/account" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-bold hover:text-[#8A3324]">
                 <User className="w-4 h-4 md:w-5 md:h-5" />
                 <span className="hidden md:inline">حسابي</span>
               </Link>
+              
               <button onClick={handleLogout} className="text-red-500 hover:text-red-700" title="تسجيل الخروج">
                 <LogOut className="w-4 h-4 md:w-5 md:h-5" />
               </button>

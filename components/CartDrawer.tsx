@@ -2,27 +2,62 @@
 import { useCartStore } from '../store/cartStore';
 import Link from 'next/link';
 import { X, Minus, Plus, Trash2, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { getSupabase } from '../lib/supabase';
 
 export default function CartDrawer() {
   const { items, isCartOpen, closeCart, removeFromCart, updateQuantity } = useCartStore();
   
+  // حالة إعدادات الشحن المجاني
+  const [shippingConfig, setShippingConfig] = useState({
+    show: true,
+    threshold: 500,
+    text: 'أضف بقيمة {amount} ج.م للحصول على شحن مجاني',
+    success: 'مبروك! لقد حصلت على شحن مجاني 🎉'
+  });
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      const supabase = getSupabase();
+      const { data } = await supabase.from('site_content').select('key, value').in('key', ['show_free_shipping', 'free_shipping_threshold', 'free_shipping_text', 'free_shipping_success_text']);
+      
+      if (data) {
+        const config: any = {};
+        data.forEach(item => { config[item.key] = item.value; });
+        setShippingConfig({
+          show: config.show_free_shipping === 'true',
+          threshold: Number(config.free_shipping_threshold) || 500,
+          text: config.free_shipping_text || 'أضف بقيمة {amount} ج.م للحصول على شحن مجاني',
+          success: config.free_shipping_success_text || 'مبروك! لقد حصلت على شحن مجاني 🎉'
+        });
+      }
+    };
+    fetchConfig();
+  }, []);
+
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal > 500 ? 0 : 50; // شحن مجاني فوق 500
+  const shipping = subtotal >= shippingConfig.threshold ? 0 : 50; 
   const total = subtotal + shipping;
+  
+  // حساب النسبة المئوية للشريط
+  const progress = Math.min((subtotal / shippingConfig.threshold) * 100, 100);
+  const amountLeft = shippingConfig.threshold - subtotal;
+  
+  // تجهيز النص ديناميكياً
+  const displayText = subtotal >= shippingConfig.threshold 
+    ? shippingConfig.success 
+    : shippingConfig.text.replace('{amount}', amountLeft.toString());
 
   if (!isCartOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex justify-end">
-      {/* الخلفية الشفافة */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeCart}></div>
 
-      {/* السلة */}
       <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-slide-in">
         
-        {/* رأس السلة */}
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
-          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             سلة التسوق <span className="text-sm bg-[#A44222] text-white px-2 py-0.5 rounded-full">{items.length}</span>
           </h2>
           <button onClick={closeCart} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -30,18 +65,22 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {/* محتوى السلة */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           
-          {/* شريط الشحن المجاني */}
-          <div className="bg-[#FDFBF7] p-3 rounded-xl border border-gray-100 text-center">
-            <p className="text-xs font-bold text-gray-600 mb-2">
-              {subtotal >= 500 ? "مبروك! لقد حصلت على شحن مجاني 🎉" : `أضف بقيمة ${500 - subtotal} ج.م للحصول على شحن مجاني`}
-            </p>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-[#A44222] h-2 rounded-full transition-all" style={{ width: `${Math.min((subtotal / 500) * 100, 100)}%` }}></div>
+          {/* شريط الشحن المجاني الديناميكي */}
+          {shippingConfig.show && (
+            <div className="bg-[#FDFBF7] p-4 rounded-xl border border-gray-100 text-center">
+              <p className="text-xs font-bold text-gray-600 mb-2">
+                {displayText}
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-[#A44222] h-2 rounded-full transition-all duration-500" 
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
             </div>
-          </div>
+          )}
 
           {items.length === 0 ? (
             <div className="text-center py-20">
@@ -75,7 +114,6 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* الفوتر (الإجمالي والدفع) */}
         {items.length > 0 && (
           <div className="border-t border-gray-100 p-6 bg-white">
             <div className="flex justify-between text-sm font-bold text-gray-600 mb-2">

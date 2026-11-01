@@ -24,7 +24,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-gray-200/50">
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 md:px-8 py-3 flex justify-between items-center gap-4">
         
         {/* الأيقونات */}
@@ -44,12 +44,12 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* اللوجو - المسار الصح */}
+        {/* اللوجو - لاحظ المسار logo.jpg */}
         <Link href="/" className="shrink-0 flex justify-center">
           <img 
             src="/images/logo.jpg" 
             alt="الغرباوي" 
-            className="h-16 md:h-20 object-contain drop-shadow-sm" 
+            className="h-14 md:h-16 object-contain" 
           />
         </Link>
 
@@ -60,7 +60,7 @@ export default function Header() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ابحث..." 
-            className="w-full bg-gray-100/50 border border-transparent rounded-full py-2 px-9 focus:outline-none focus:bg-white focus:border-[#A44222] transition-all text-sm" 
+            className="w-full bg-gray-100 border border-transparent rounded-full py-2 px-9 focus:outline-none focus:bg-white focus:border-[#A44222] transition-all text-sm" 
           />
           <Search className="w-4 h-4 absolute right-3 top-2.5 text-gray-400" />
         </form>

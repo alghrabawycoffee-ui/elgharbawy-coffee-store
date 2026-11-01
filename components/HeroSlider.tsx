@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import { Autoplay, Pagination } from 'swiper/modules';
 import { getSupabase } from '../lib/supabase';
+import { ArrowLeft } from 'lucide-react';
 
 export default function HeroSlider() {
   const [banners, setBanners] = useState<any[]>([]);
@@ -19,54 +20,53 @@ export default function HeroSlider() {
     fetchBanners();
   }, []);
 
-  if (loading) return <div className="h-[500px] w-full bg-[#1A120B] animate-pulse"></div>;
+  if (loading) return <div className="h-[500px] w-full bg-gray-200 animate-pulse"></div>;
   if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full h-[550px] md:h-[650px] bg-[#1A120B]">
+    <section className="w-full bg-[#1A120B]">
       <Swiper 
-        modules={[Autoplay, EffectFade, Pagination]} 
-        effect="fade"
+        modules={[Autoplay, Pagination]} 
         spaceBetween={0} 
         slidesPerView={1} 
         loop={banners.length > 1}
-        autoplay={{ delay: 6000, disableOnInteraction: false }} 
+        autoplay={{ delay: 5000, disableOnInteraction: false }} 
         pagination={{ clickable: true }} 
-        className="w-full h-full"
+        className="w-full"
       >
         {banners.map((banner) => (
-          <SwiperSlide key={banner.id} className="relative w-full h-full">
-            
-            <div className="absolute inset-0 w-full h-full">
-              <img src={banner.image_url} alt="bg" className="w-full h-full object-cover opacity-60" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A120B] via-transparent to-[#1A120B]/30"></div>
-            </div>
-            
-            <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-16 flex flex-col justify-center items-center text-center">
-              <span className="bg-[#A44222] text-white text-xs font-bold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
-                {banner.tag}
-              </span>
+          <SwiperSlide key={banner.id}>
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row h-auto md:h-[500px] items-center">
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[1.2] mb-6">
-                {banner.title} <br />
-                <span className="text-[#D4A373]">{banner.subtitle}</span>
-              </h1>
-              
-              <p className="text-gray-300 text-sm md:text-lg mb-8 max-w-xl leading-relaxed">
-                {banner.description}
-              </p>
+              {/* النص (يمين) */}
+              <div className="w-full md:w-1/2 p-8 md:p-16 text-center md:text-right flex flex-col justify-center">
+                <span className="text-[#D4A373] font-bold text-sm mb-4 tracking-widest uppercase">
+                  {banner.tag}
+                </span>
+                <h1 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+                  {banner.title} <br />
+                  <span className="text-[#D4A373]">{banner.subtitle}</span>
+                </h1>
+                <p className="text-gray-300 text-sm md:text-base mb-8 leading-relaxed max-w-md mx-auto md:mx-0">
+                  {banner.description}
+                </p>
+                <Link href="#products" className="bg-[#A44222] text-white px-8 py-3 rounded-lg font-bold inline-flex items-center justify-center gap-2 hover:bg-white hover:text-[#1A120B] transition-colors w-fit mx-auto md:mx-0">
+                  تسوق الآن <ArrowLeft className="w-5 h-5" />
+                </Link>
+              </div>
 
-              <Link href="#products" className="bg-white text-[#1A120B] px-10 py-4 rounded-full font-black text-lg hover:bg-[#D4A373] hover:text-[#1A120B] transition-all hover:scale-105">
-                تسوق الآن
-              </Link>
+              {/* الصورة (شمال) */}
+              <div className="w-full md:w-1/2 h-[300px] md:h-full">
+                <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+              </div>
+
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
       <style jsx global>{`
-        .swiper-pagination { bottom: 30px !important; }
-        .swiper-pagination-bullet { background-color: #fff; opacity: 0.3; width: 8px; height: 8px; }
-        .swiper-pagination-bullet-active { background-color: #A44222; opacity: 1; width: 30px; border-radius: 4px; }
+        .swiper-pagination-bullet { background-color: #fff; opacity: 0.3; }
+        .swiper-pagination-bullet-active { background-color: #A44222; opacity: 1; width: 24px; border-radius: 4px; }
       `}</style>
     </section>
   );

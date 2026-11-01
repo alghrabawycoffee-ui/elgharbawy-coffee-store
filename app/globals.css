@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --bg-main: #F8F9FA;       /* رمادي فاتح جداً مريح للعين */
-  --text-main: #2C1A12;     /* بني قهوة غامق */
-  --brand-color: #8A3324;   /* لون البراند */
+  --bg-main: #FAFAFA;       /* أبيض مائل للرمادي الفاتح جداً */
+  --text-dark: #1A120B;     /* بني قهوة غامق */
+  --brand-color: #A44222;   /* لون التراكوتا من اللوجو */
 }
 
 body {
   background-color: var(--bg-main);
-  color: var(--text-main);
+  color: var(--text-dark);
   font-family: var(--font-cairo), sans-serif;
   -webkit-font-smoothing: antialiased;
 }

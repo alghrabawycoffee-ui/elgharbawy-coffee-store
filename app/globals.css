@@ -1,12 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FDFBF7; /* لون بيج دافي وفخم بدل الأبيض */
+  --foreground: #1A120B; /* لون بني غامق جداً للنصوص */
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-cairo), sans-serif; /* استخدمنا خط كايرو اللي إحنا معرفينه */
+  font-family: var(--font-cairo), sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* تحسين شكل الـ Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D4A373; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #8A3324; }
+
+/* تحديد النص بلون البراند */
+::selection { background: #8A3324; color: white; }
+
+html { scroll-behavior: smooth; }

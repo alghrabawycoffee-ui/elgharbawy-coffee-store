@@ -24,47 +24,61 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
-      <div className="container mx-auto px-4 md:px-8 py-3 flex justify-between items-center gap-4">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      {/* الشريط العلوي البني */}
+      <div className="bg-[#3E2723] text-[#FDFBF7] text-center py-2 text-xs md:text-sm font-bold">
+        قهوة محمصة طازجة توصل إلى باب منزلك
+      </div>
+      
+      {/* الهيدر الرئيسي */}
+      <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center gap-4">
         
-        {/* الأيقونات */}
-        <div className="flex gap-4 md:gap-6 text-[#1A120B] items-center">
+        {/* الأيقونات (شمال) */}
+        <div className="flex gap-4 text-gray-700 items-center w-1/3 justify-start">
           <button className="md:hidden"><Menu className="w-6 h-6" /></button>
-          <Link href="/cart" className="relative group">
-            <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 group-hover:text-[#A44222] transition-colors" strokeWidth={1.5} />
+          <Link href="/login" className="hidden md:flex items-center gap-1 hover:text-[#D35400]">
+            <User className="w-5 h-5" />
+          </Link>
+          <form onSubmit={handleSearch} className="relative hidden md:block">
+            <Search className="w-5 h-5 cursor-pointer hover:text-[#D35400]" onClick={() => document.getElementById('search-input')?.focus()} />
+            <input 
+              id="search-input"
+              type="text" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="absolute -right-10 top-0 w-0 opacity-0 focus:w-48 focus:opacity-100 focus:right-8 transition-all duration-300 border-b border-gray-300 outline-none text-sm bg-transparent"
+            />
+          </form>
+          <Link href="/cart" className="relative group flex items-center gap-1">
+            <ShoppingBag className="w-5 h-5 hover:text-[#D35400] transition-colors" />
+            <span className="text-sm font-bold hidden md:inline">السلة</span>
             {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-[#A44222] text-white text-[10px] font-black w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-[#D35400] text-white text-[10px] font-black w-4 h-4 flex items-center justify-center rounded-full">
                 {totalItems}
               </span>
             )}
           </Link>
-          <Link href="/login" className="flex items-center gap-1.5 text-sm font-bold hover:text-[#A44222]">
-            <User className="w-5 h-5" strokeWidth={1.5} />
-            <span className="hidden md:inline">دخول</span>
+        </div>
+
+        {/* اللوجو (النص) */}
+        <div className="w-1/3 flex justify-center">
+          <Link href="/" className="flex justify-center">
+            <img 
+              src="/images/logo.jpg" 
+              alt="الغرباوي" 
+              className="h-16 md:h-20 object-contain" 
+            />
           </Link>
         </div>
 
-        {/* اللوجو - لاحظ المسار logo.jpg */}
-        <Link href="/" className="shrink-0 flex justify-center">
-          <img 
-            src="/images/logo.jpg" 
-            alt="الغرباوي" 
-            className="h-14 md:h-16 object-contain" 
-          />
-        </Link>
-
-        {/* البحث */}
-        <form onSubmit={handleSearch} className="relative w-full max-w-xs hidden md:block">
-          <input 
-            type="text" 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="ابحث..." 
-            className="w-full bg-gray-100 border border-transparent rounded-full py-2 px-9 focus:outline-none focus:bg-white focus:border-[#A44222] transition-all text-sm" 
-          />
-          <Search className="w-4 h-4 absolute right-3 top-2.5 text-gray-400" />
-        </form>
-        <div className="md:hidden"><Search className="w-6 h-6" /></div>
+        {/* المنيو (يمين) */}
+        <div className="w-1/3 flex justify-end">
+          <nav className="hidden md:flex gap-6 text-sm font-bold text-gray-700">
+            <Link href="/" className="hover:text-[#D35400] transition-colors">الرئيسية</Link>
+            <Link href="#products" className="hover:text-[#D35400] transition-colors">المنتجات</Link>
+            <Link href="#" className="hover:text-[#D35400] transition-colors">جهات الاتصال</Link>
+          </nav>
+        </div>
       </div>
     </header>
   );

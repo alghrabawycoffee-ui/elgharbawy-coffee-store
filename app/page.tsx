@@ -23,23 +23,18 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
   const products = productsRes.data || [];
   const categories = categoriesRes.data || [];
   
-  const title = searchQuery ? `نتائج البحث: "${searchQuery}"` : (categoryId ? categories.find(c => c.id === categoryId)?.name : 'الأكثر مبيعاً');
+  const title = searchQuery ? `نتائج البحث: "${searchQuery}"` : (categoryId ? categories.find(c => c.id === categoryId)?.name : 'المنتجات');
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8">
       
-      {/* الأقسام */}
+      {/* الأقسام (خطوط بسيطة زي بن مصر) */}
       {categories.length > 0 && (
-        <div className="py-8 border-b border-gray-200">
+        <div className="py-6 border-b border-gray-200">
           <div className="flex overflow-x-auto gap-6 pb-2 hide-scrollbar justify-start md:justify-center">
             {categories.map((cat) => (
-              <Link href={`/?category=${cat.id}#products`} key={cat.id} className="flex-shrink-0 group">
-                <div className="flex flex-col items-center gap-2 w-20">
-                  <div className={`w-16 h-16 rounded-full overflow-hidden border-2 p-0.5 transition-all bg-white ${categoryId === cat.id ? 'border-[#A44222]' : 'border-gray-200 group-hover:border-[#A44222]'}`}>
-                    <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover rounded-full" />
-                  </div>
-                  <span className={`text-xs font-bold text-center ${categoryId === cat.id ? 'text-[#A44222]' : 'text-gray-600'}`}>{cat.name}</span>
-                </div>
+              <Link href={`/?category=${cat.id}#products`} key={cat.id} className={`text-sm font-bold whitespace-nowrap pb-2 border-b-2 transition-colors ${categoryId === cat.id ? 'text-[#D35400] border-[#D35400]' : 'text-gray-600 border-transparent hover:text-[#D35400]'}`}>
+                {cat.name}
               </Link>
             ))}
           </div>
@@ -48,12 +43,14 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
 
       {/* المنتجات */}
       <div id="products" className="py-12">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-black text-gray-800">{title}</h2>
-          {(categoryId || searchQuery) && (
-            <Link href="/#products" className="flex items-center gap-1 text-sm font-bold text-red-500 bg-red-50 px-3 py-1.5 rounded-lg hover:bg-red-100">
+        <div className="flex justify-between items-end mb-8 border-b border-gray-200 pb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-gray-900">{title}</h2>
+          {(categoryId || searchQuery) ? (
+            <Link href="/#products" className="flex items-center gap-1 text-sm font-bold text-[#D35400] hover:underline">
               <X className="w-4 h-4" /> مسح الفلتر
             </Link>
+          ) : (
+            <Link href="#products" className="text-sm font-bold text-[#D35400] hover:underline">عرض الكل</Link>
           )}
         </div>
 
@@ -75,7 +72,7 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
 
 export default function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   return (
-    <main className="bg-[#FAFAFA] min-h-screen">
+    <main className="bg-white min-h-screen">
       <HeroSlider />
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري التحميل...</div>}>
         <PageContent searchParams={searchParams} />

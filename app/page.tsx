@@ -18,14 +18,21 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
   if (categoryId) productsQuery = productsQuery.eq('category_id', categoryId);
   if (searchQuery) productsQuery = productsQuery.ilike('name', `%${searchQuery}%`);
 
-  const [productsRes, categoriesRes] = await Promise.all([
+  // جلب كل النصوص
+  const [productsRes, categoriesRes, contentRes] = await Promise.all([
     productsQuery,
-    supabase.from('categories').select('*')
+    supabase.from('categories').select('*'),
+    supabase.from('site_content').select('*')
   ]);
 
   const products = productsRes.data || [];
   const categories = categoriesRes.data || [];
-  
+  const allContent = contentRes.data || [];
+
+  // تحويل النصوص لمصفوفة سهلة الاستخدام
+  const contentMap: any = {};
+  allContent.forEach(item => { contentMap[item.key] = item.value; });
+
   const title = searchQuery ? `نتائج البحث: "${searchQuery}"` : (categoryId ? categories.find(c => c.id === categoryId)?.name : 'المنتجات');
 
   return (
@@ -67,6 +74,32 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
           </div>
         )}
       </div>
+
+      {/* الشريط المتحرك - بيظهر لو show_marquee = true */}
+      {contentMap.show_marquee === 'true' && (
+        <div className="bg-[#FDFBF7] border-y border-gray-200 py-3 overflow-hidden flex whitespace-nowrap mb-12" dir="ltr">
+          <div className="animate-marquee flex gap-8 items-center text-sm font-bold text-gray-500">
+             <span>{contentMap.marquee_text}</span>
+             <span>{contentMap.marquee_text}</span>
+          </div>
+        </div>
+      )}
+
+      {/* المميزات - بتظهر لو show_features = true */}
+      {contentMap.show_features === 'true' && (
+        <Features content={contentMap} />
+      )}
+
+      {/* قصة البراند - بتظهر لو show_story = true */}
+      {contentMap.show_story === 'true' && (
+        <BrandStory content={contentMap} />
+      )}
+
+      {/* آراء العملاء - بتظهر لو show_testimonials = true */}
+      {contentMap.show_testimonials === 'true' && (
+        <Testimonials content={contentMap} />
+      )}
+
     </div>
   );
 }
@@ -75,32 +108,9 @@ export default function Home({ searchParams }: { searchParams: Promise<{ [key: s
   return (
     <main className="bg-[#FAFAFA] min-h-screen">
       <HeroSlider />
-      
-      {/* شريط متحرك (Marquee) */}
-      <div className="bg-[#FDFBF7] border-y border-gray-200 py-3 overflow-hidden flex whitespace-nowrap" dir="ltr">
-        <div className="animate-marquee flex gap-8 items-center text-sm font-bold text-gray-500">
-          <span>شحن مجاني للطلبات فوق 500 ج.م</span>
-          <span>★</span>
-          <span>محمص طازج يومياً</span>
-          <span>★</span>
-          <span>أجود أنواع البن</span>
-          <span>★</span>
-          <span>شحن مجاني للطلبات فوق 500 ج.م</span>
-          <span>★</span>
-          <span>محمص طازج يومياً</span>
-          <span>★</span>
-          <span>أجود أنواع البن</span>
-          <span>★</span>
-        </div>
-      </div>
-
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري التحميل...</div>}>
         <PageContent searchParams={searchParams} />
       </Suspense>
-      
-      <Features />
-      <BrandStory />
-      <Testimonials />
     </main>
   )
 }

@@ -1,10 +1,10 @@
 import { Star } from 'lucide-react';
 
-export default function Testimonials() {
+export default function Testimonials({ content }: { content: any }) {
   const reviews = [
-    { name: 'أميرة س.', text: 'القهوة التركية غنية وناعمة، مع رائحة منعشة منذ لحظة فتح الكيس. القهوة التركية غنية وناعمة، مع رائحة منعشة منذ لحظة فتح الكيس.', avatar: 'https://i.pravatar.cc/150?img=1' },
-    { name: 'كريم ح.', text: 'يتميز الإسبريسو بكرملة كثيفة ونكهة نظيفة، مما يجعله متعة من أول رشفة لآخر قطرة.', avatar: 'https://i.pravatar.cc/150?img=11' },
-    { name: 'ليلى م.', text: 'حبوب البن تفوح منها رائحة منعشة ويتم تحضيرها بشكل مثالي. رائحة القهوة طازجة جداً.', avatar: 'https://i.pravatar.cc/150?img=5' },
+    { name: content.testimonial1_name, text: content.testimonial1_text, avatar: 'https://i.pravatar.cc/150?img=1' },
+    { name: content.testimonial2_name, text: content.testimonial2_text, avatar: 'https://i.pravatar.cc/150?img=11' },
+    { name: content.testimonial3_name, text: content.testimonial3_text, avatar: 'https://i.pravatar.cc/150?img=5' },
   ];
 
   return (

@@ -36,11 +36,11 @@ export default function HeroSlider() {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) return <div className="h-[500px] w-full bg-[#1A120B] animate-pulse"></div>;
+  if (loading) return <div className="h-[600px] w-full bg-[#F9F6F0] animate-pulse"></div>;
   if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full h-[550px] md:h-[650px] bg-[#1A120B]">
+    <section className="relative w-full h-auto min-h-[600px] md:h-[700px] bg-[#F9F6F0] overflow-hidden">
       <Swiper 
         modules={[Autoplay, EffectFade, Pagination]} 
         effect="fade"
@@ -52,52 +52,69 @@ export default function HeroSlider() {
         className="w-full h-full"
       >
         {banners.map((banner) => (
-          <SwiperSlide key={banner.id} className="relative w-full h-full">
+          <SwiperSlide key={banner.id} className="relative w-full h-full flex items-center">
             
-            {/* الخلفية السينمائية */}
-            <div className="absolute inset-0 w-full h-full">
-              <img src={banner.image_url} alt="bg" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/60 md:bg-gradient-to-l md:from-[#1A120B]/95 md:via-[#1A120B]/70 md:to-transparent"></div>
-            </div>
-            
-            {/* المحتوى */}
-            <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-16 flex flex-col justify-center items-center md:items-start text-center md:text-right">
-              <span className="bg-[#8A3324] text-white text-xs md:text-sm font-bold px-4 py-1.5 rounded-full mb-6">
-                {banner.tag}
-              </span>
+            <div className="max-w-7xl mx-auto w-full px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-20 md:py-0">
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-4 drop-shadow-xl">
-                {banner.title} <br />
-                <span className="text-[#D4A373]">{banner.subtitle}</span>
-              </h1>
-              
-              <p className="text-gray-300 text-sm md:text-lg mb-8 max-w-lg leading-relaxed">
-                {banner.description}
-              </p>
-              
-              {/* العداد الزجاجي */}
-              {banner.show_timer && (
-                <div className="flex gap-3 mb-8">
-                  {Object.entries(timeLeft).map(([unit, value]) => (
-                    <div key={unit} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-2 md:p-3 text-center min-w-[60px] md:min-w-[80px]">
-                      <span className="block text-xl md:text-3xl font-black text-white leading-none mb-1">{value}</span>
-                      <span className="text-[10px] md:text-xs text-gray-300 font-bold">{unit === 'days' ? 'يوم' : unit === 'hours' ? 'ساعة' : unit === 'minutes' ? 'دقيقة' : 'ثانية'}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              <Link href="#products" className="bg-white text-[#1A120B] px-8 py-3 rounded-full font-black flex items-center gap-2 hover:bg-[#D4A373] hover:text-white transition-all hover:scale-105 shadow-xl">
-                تسوق الآن <ArrowLeft className="w-5 h-5" />
-              </Link>
+              {/* النص - الجزء الأيمن */}
+              <div className="order-2 md:order-1 text-center md:text-right z-10">
+                <span className="text-[#8A3324] font-bold tracking-[0.2em] text-xs md:text-sm uppercase mb-4 block">
+                  {banner.tag}
+                </span>
+                
+                <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-light text-[#1C1512] leading-[1.1] mb-6">
+                  {banner.title} <br />
+                  <span className="font-black text-[#8A3324]">{banner.subtitle}</span>
+                </h1>
+                
+                <p className="text-gray-500 text-sm md:text-lg mb-10 max-w-md mx-auto md:mx-0 leading-relaxed">
+                  {banner.description}
+                </p>
+                
+                {/* العداد الفاخر - بدون صناديق */}
+                {banner.show_timer && (
+                  <div className="flex justify-center md:justify-start gap-6 mb-10 text-center">
+                    {Object.entries(timeLeft).map(([unit, value]) => (
+                      <div key={unit} className="flex flex-col items-center">
+                        <span className="text-3xl md:text-4xl font-light text-[#1C1512]">{value}</span>
+                        <span className="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">
+                          {unit === 'days' ? 'أيام' : unit === 'hours' ? 'ساعات' : unit === 'minutes' ? 'دقائق' : 'ثواني'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                <Link href="#products" className="inline-flex items-center gap-3 border-b-2 border-[#1C1512] pb-2 text-[#1C1512] font-bold text-lg hover:text-[#8A3324] hover:border-[#8A3324] transition-all group">
+                  اكتشف المجموعة
+                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
+                </Link>
+              </div>
+
+              {/* الصورة - الجزء الأيسر */}
+              <div className="order-1 md:order-2 relative h-[300px] md:h-[500px] flex items-center justify-center">
+                {/* دايرة ذهبية باهتة في الخلفية */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[450px] md:h-[450px] bg-[#D4A373]/20 rounded-full blur-3xl"></div>
+                <img 
+                  src={banner.image_url} 
+                  alt={banner.title} 
+                  className="relative z-10 w-full h-full object-contain drop-shadow-2xl animate-float"
+                />
+              </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
       <style jsx global>{`
-        .swiper-pagination { bottom: 30px !important; }
-        .swiper-pagination-bullet { background-color: #fff; opacity: 0.3; width: 8px; height: 8px; transition: 0.3s; }
-        .swiper-pagination-bullet-active { background-color: #D4A373; opacity: 1; width: 30px; border-radius: 4px; }
+        .swiper-pagination { bottom: 20px !important; }
+        .swiper-pagination-bullet { background-color: #8A3324; opacity: 0.2; width: 6px; height: 6px; }
+        .swiper-pagination-bullet-active { opacity: 1; width: 20px; border-radius: 4px; }
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
       `}</style>
     </section>
   );

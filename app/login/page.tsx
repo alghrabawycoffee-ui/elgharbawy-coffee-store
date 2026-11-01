@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+// 1. التعديل هنا: استخدمنا getSupabase بدل supabase
+import { getSupabase } from '@/lib/supabase'; 
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
@@ -12,9 +13,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // 1. الكود ده هو اللي بيحل المشكلة: بيشوف لو المستخدم مسجل، يحوله فوراً
   useEffect(() => {
     const checkUser = async () => {
+      // 2. التعديل هنا: بنستدعي الدالة جوة الـ useEffect
+      const supabase = getSupabase(); 
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         router.push('/account'); 
@@ -23,10 +25,11 @@ export default function LoginPage() {
     checkUser();
   }, [router]);
 
-  // 2. دالة الدخول العادي
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    // 3. التعديل هنا
+    const supabase = getSupabase(); 
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -40,8 +43,9 @@ export default function LoginPage() {
     setLoading(false);
   };
 
-  // 3. دالة الدخول بجوجل (متأكد إن redirectTo بياخد رابط الموقع الحالي)
   const handleGoogleLogin = async () => {
+    // 4. التعديل هنا
+    const supabase = getSupabase(); 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -51,8 +55,9 @@ export default function LoginPage() {
     if (error) toast.error(error.message);
   };
 
-  // 4. دالة الدخول بفيسبوك
   const handleFacebookLogin = async () => {
+    // 5. التعديل هنا
+    const supabase = getSupabase(); 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
       options: {

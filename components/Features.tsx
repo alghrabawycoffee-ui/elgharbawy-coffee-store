@@ -9,17 +9,15 @@ export default function Features() {
   ];
 
   return (
-    <div className="container mx-auto px-4 md:px-10 py-10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+    <div className="container mx-auto px-4 md:px-10 py-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
         {features.map((feature, index) => (
-          <div key={index} className="bg-white p-4 md:p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
-            <div className="bg-[#FAFAFA] p-2 md:p-3 rounded-full text-[#8A3324]">
-              <feature.icon className="w-6 h-6 md:w-8 md:h-8" />
+          <div key={index} className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col items-center text-center group border border-gray-50">
+            <div className="bg-[#8A3324]/5 p-4 rounded-full mb-4 group-hover:bg-[#8A3324] transition-colors duration-300">
+              <feature.icon className="w-8 h-8 text-[#8A3324] group-hover:text-white transition-colors duration-300" />
             </div>
-            <div className="text-center md:text-right">
-              <h4 className="font-bold text-sm md:text-base text-gray-800">{feature.title}</h4>
-              <p className="text-[10px] md:text-sm text-gray-500 mt-1">{feature.desc}</p>
-            </div>
+            <h4 className="font-black text-sm md:text-lg text-gray-800 mb-1">{feature.title}</h4>
+            <p className="text-xs md:text-sm text-gray-500 font-medium">{feature.desc}</p>
           </div>
         ))}
       </div>

@@ -1,10 +1,12 @@
 import { Suspense } from 'react'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase' // التعديل هنا
 import { Star } from 'lucide-react'
 import AddToCartButton from '../components/AddToCartButton'
 
 // 1. مكون منفصل لجلب وعرض المنتجات من الداتابيز
 async function ProductsList() {
+  const supabase = getSupabase(); // التعديل هنا: استدعاء الدالة جوة المكون
+
   // سحب البيانات من Supabase
   const { data: products, error } = await supabase.from('products').select('*')
 

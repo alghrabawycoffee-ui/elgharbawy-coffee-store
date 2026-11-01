@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { User, Package, Clock, LogOut } from 'lucide-react';
 import Link from 'next/link';
@@ -14,11 +14,13 @@ export default function AccountPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const supabase = getSupabase(); // 1. استدعاء الدالة هنا
+      
       // جلب بيانات المستخدم
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        router.push('/login'); // لو مش مسجل يروح للدخول
+        router.push('/login');
         return;
       }
       
@@ -39,6 +41,7 @@ export default function AccountPage() {
   }, [router]);
 
   const handleLogout = async () => {
+    const supabase = getSupabase(); // 2. استدعاء الدالة هنا كمان
     await supabase.auth.signOut();
     toast.success('تم تسجيل الخروج');
     router.push('/');

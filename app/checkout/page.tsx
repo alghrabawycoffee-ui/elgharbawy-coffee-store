@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '../../store/cartStore';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase'; // التعديل هنا
 import { Lock, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -12,7 +12,6 @@ export default function CheckoutPage() {
   const { items, clearCart } = useCartStore();
   const router = useRouter();
   
-  // بيانات الفورم
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -23,7 +22,6 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // حسابات السلة
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = items.length > 0 ? 50 : 0;
   const total = subtotal + shipping;
@@ -38,10 +36,12 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. جلب بيانات المستخدم الحالي (لو مسجل دخول)
+      const supabase = getSupabase(); // التعديل هنا: استدعاء الدالة
+
+      // 1. جلب بيانات المستخدم الحالي
       const { data: { user } } = await supabase.auth.getUser();
 
-      // 2. حفظ الطلب الأساسي في جدول orders
+      // 2. حفظ الطلب الأساسي
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert([{
@@ -50,14 +50,14 @@ export default function CheckoutPage() {
           address: formData.address,
           total_price: total,
           status: 'pending',
-          user_id: user?.id || null // ربط الطلب بالعميل
+          user_id: user?.id || null
         }])
         .select()
         .single();
 
       if (orderError) throw orderError;
 
-      // 3. حفظ تفاصيل المنتجات في جدول order_items
+      // 3. حفظ تفاصيل المنتجات
       const orderItems = items.map(item => ({
         order_id: orderData.id,
         product_id: item.id,
@@ -71,12 +71,11 @@ export default function CheckoutPage() {
 
       if (itemsError) throw itemsError;
 
-      // 4. تفريغ السلة وإظهار رسالة النجاح
+      // 4. تفريغ السلة وإظهار النجاح
       clearCart();
       setIsSuccess(true);
       toast.success('تم استلام طلبك بنجاح!');
       
-      // العودة للرئيسية بعد 4 ثواني
       setTimeout(() => {
         router.push('/');
       }, 4000);
@@ -89,7 +88,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // لو السلة فاضية
   if (items.length === 0 && !isSuccess) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
@@ -99,7 +97,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // شاشة النجاح
   if (isSuccess) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
@@ -116,8 +113,6 @@ export default function CheckoutPage() {
       <h1 className="text-3xl font-black text-center mb-10 text-[#5A1F14]">إتمام الطلب</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        
-        {/* فورم البيانات */}
         <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm">
           <h2 className="text-xl font-bold mb-6 border-b pb-4">بيانات التوصيل</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -153,10 +148,8 @@ export default function CheckoutPage() {
           </form>
         </div>
 
-        {/* ملخص الطلب */}
         <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm h-fit">
           <h2 className="text-xl font-bold mb-6 border-b pb-4">ملخص الطلب</h2>
-          
           <div className="space-y-4 mb-6">
             {items.map(item => (
               <div key={item.id} className="flex justify-between items-center text-sm">
@@ -189,7 +182,6 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Search, ShoppingBag, User, LogOut } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabase } from '../lib/supabase'; // التعديل هنا
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -14,6 +14,8 @@ export default function Header() {
   const router = useRouter();
 
   useEffect(() => {
+    const supabase = getSupabase(); // التعديل هنا: استدعاء الدالة جوة الـ useEffect
+
     // جلب حالة المستخدم أول ما الصفحة تفتح
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -32,6 +34,7 @@ export default function Header() {
   }, []);
 
   const handleLogout = async () => {
+    const supabase = getSupabase(); // التعديل هنا: استدعاء الدالة جوة دالة الخروج
     await supabase.auth.signOut();
     toast.success('تم تسجيل الخروج');
     router.push('/');
@@ -83,7 +86,6 @@ export default function Header() {
           <Search className="w-5 h-5 absolute right-3 top-2.5 text-gray-400" />
         </div>
       </div>
-      {/* الناف بار زي ما هو */}
     </header>
   );
 }

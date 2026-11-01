@@ -34,8 +34,20 @@ export default function AdminContentPage() {
 
   if (loading) return <div className="text-center py-20 text-xl font-bold">جاري التحميل...</div>;
 
-  // بنجمع النصوص حسب القسم عشان الترتيب يبقى شيك
-  const sections = ["marquee", "features", "brand_story", "testimonials"];
+  // 1. استخراج كل الأقسام الفريدة أوتوماتيك من الداتابيز
+  const uniqueSections = Array.from(new Set(contents.map(c => c.section)));
+
+  // 2. تسميات عربية جميلة للأقسام عشان تبان شيك
+  const sectionTitles: { [key: string]: string } = {
+    'marquee': 'الشريط المتحرك (Marquee)',
+    'features': 'المميزات (Features)',
+    'brand_story': 'قصة البراند (Brand Story)',
+    'testimonials': 'آراء العملاء (Testimonials)',
+    'cart': 'إعدادات السلة والشحن (Cart & Shipping)',
+    'header': 'الهيدر (Header)',
+    'footer': 'الفوتر (Footer)',
+    'home': 'الصفحة الرئيسية (Home)'
+  };
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-4xl">
@@ -49,19 +61,22 @@ export default function AdminContentPage() {
         </h1>
         <p className="text-gray-500 mb-8">من هنا تقدر تعدل أي كلمة، وتفتح أو تقفل أي قسم في الصفحة الرئيسية.</p>
 
-        {sections.map(sectionName => {
+        {/* 3. عمل لوب على الأقسام اللي اتكشفت أوتوماتيك */}
+        {uniqueSections.map(sectionName => {
           const sectionContent = contents.filter(c => c.section === sectionName);
           if (sectionContent.length === 0) return null;
 
           return (
             <div key={sectionName} className="mb-10 border border-gray-200 rounded-xl overflow-hidden">
               <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                <h2 className="font-black text-gray-700 capitalize">{sectionName.replace('_', ' ')}</h2>
+                <h2 className="font-black text-gray-700">
+                  {sectionTitles[sectionName] || sectionName}
+                </h2>
               </div>
               <div className="p-4 space-y-4">
                 {sectionContent.map((item) => (
                   <div key={item.id} className="flex flex-col md:flex-row gap-3 items-center border-b border-gray-50 pb-4 last:border-0 last:pb-0">
-                    <label className="font-bold text-sm text-gray-600 w-full md:w-1/4">{item.key}</label>
+                    <label className="font-bold text-sm text-gray-600 w-full md:w-1/4 capitalize">{item.key.replace(/_/g, ' ')}</label>
                     
                     {/* لو القيمة true/false بنعمل Checkbox */}
                     {item.value === 'true' || item.value === 'false' ? (
@@ -70,7 +85,7 @@ export default function AdminContentPage() {
                           type="checkbox" 
                           checked={item.value === 'true'}
                           onChange={(e) => handleChange(item.id, e.target.checked ? 'true' : 'false')}
-                          className="w-5 h-5 accent-[#8A3324]"
+                          className="w-5 h-5 accent-[#8A3324] cursor-pointer"
                         />
                         <span className="text-sm font-bold">{item.value === 'true' ? 'مفعل (ظاهر)' : 'مخفي (مقفول)'}</span>
                       </div>
@@ -86,7 +101,7 @@ export default function AdminContentPage() {
                     <button 
                       onClick={() => handleSave(item.id, item.key, item.value)}
                       disabled={savingId === item.id}
-                      className="bg-[#8A3324] text-white px-4 py-2 rounded-lg font-bold hover:bg-[#5A1F14] transition-colors flex items-center gap-1 disabled:opacity-50 text-sm w-full md:w-auto"
+                      className="bg-[#8A3324] text-white px-4 py-2 rounded-lg font-bold hover:bg-[#5A1F14] transition-colors flex items-center gap-1 disabled:opacity-50 text-sm w-full md:w-auto justify-center"
                     >
                       <Save className="w-4 h-4" /> {savingId === item.id ? 'جاري...' : 'حفظ'}
                     </button>

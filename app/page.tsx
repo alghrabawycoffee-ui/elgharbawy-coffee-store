@@ -31,7 +31,6 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8">
       
-      {/* الأقسام */}
       {categories.length > 0 && (
         <div className="py-6 border-b border-gray-200">
           <div className="flex overflow-x-auto gap-6 pb-2 hide-scrollbar justify-start md:justify-center">
@@ -44,7 +43,6 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
         </div>
       )}
 
-      {/* المنتجات */}
       <div id="products" className="py-12">
         <div className="flex justify-between items-end mb-8 border-b border-gray-200 pb-4">
           <h2 className="text-3xl md:text-4xl font-black text-gray-900">{title}</h2>
@@ -75,13 +73,31 @@ async function PageContent({ searchParams }: { searchParams: Promise<{ [key: str
 
 export default function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-[#FAFAFA] min-h-screen">
       <HeroSlider />
+      
+      {/* شريط متحرك (Marquee) */}
+      <div className="bg-[#FDFBF7] border-y border-gray-200 py-3 overflow-hidden flex whitespace-nowrap" dir="ltr">
+        <div className="animate-marquee flex gap-8 items-center text-sm font-bold text-gray-500">
+          <span>شحن مجاني للطلبات فوق 500 ج.م</span>
+          <span>★</span>
+          <span>محمص طازج يومياً</span>
+          <span>★</span>
+          <span>أجود أنواع البن</span>
+          <span>★</span>
+          <span>شحن مجاني للطلبات فوق 500 ج.م</span>
+          <span>★</span>
+          <span>محمص طازج يومياً</span>
+          <span>★</span>
+          <span>أجود أنواع البن</span>
+          <span>★</span>
+        </div>
+      </div>
+
       <Suspense fallback={<div className="text-center py-20 text-gray-500 font-bold">جاري التحميل...</div>}>
         <PageContent searchParams={searchParams} />
       </Suspense>
       
-      {/* الأجزاء الجديدة زي بن مصر */}
       <Features />
       <BrandStory />
       <Testimonials />

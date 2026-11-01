@@ -1,6 +1,7 @@
+"use client";
+
 export const dynamic = 'force-dynamic';
 
-"use client";
 import { useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase';
 import { Plus, Trash2 } from 'lucide-react';
@@ -56,8 +57,8 @@ export default function AdminBanners() {
       {showForm && (
         <form onSubmit={handleAdd} className="bg-white p-6 rounded-2xl shadow-sm mb-8 space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div><label className="block text-sm font-bold mb-1">التاج</label><input required value={formData.tag} onChange={e => setFormData({...formData, tag: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
-            <div><label className="block text-sm font-bold mb-1">العنوان</label><input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
+            <div><label className="block text-sm font-bold mb-1">التاج (مثال: عرض محدود)</label><input required value={formData.tag} onChange={e => setFormData({...formData, tag: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
+            <div><label className="block text-sm font-bold mb-1">العنوان الرئيسي</label><input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
             <div><label className="block text-sm font-bold mb-1">العنوان الفرعي</label><input required value={formData.subtitle} onChange={e => setFormData({...formData, subtitle: e.target.value})} className="w-full border p-2 rounded-lg" /></div>
             <div><label className="block text-sm font-bold mb-1">رابط الصورة (URL كامل)</label><input required value={formData.image_url} onChange={e => setFormData({...formData, image_url: e.target.value})} className="w-full border p-2 rounded-lg" placeholder="https://..." /></div>
           </div>
@@ -69,9 +70,9 @@ export default function AdminBanners() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {banners.map((banner) => (
-          <div key={banner.id} className="bg-white rounded-2xl shadow-sm overflow-hidden flex border">
+          <div key={banner.id} className="bg-white rounded-2xl shadow-sm overflow-hidden flex border relative">
             <img src={banner.image_url} className="w-1/3 object-cover" alt={banner.title} />
-            <div className="p-4 w-2/3 relative">
+            <div className="p-4 w-2/3">
               <span className="text-xs font-bold bg-gray-100 px-2 py-1 rounded">{banner.tag}</span>
               <h3 className="font-black text-lg mt-2">{banner.title}</h3>
               <p className="text-sm text-gray-500 line-clamp-2 mt-1">{banner.description}</p>

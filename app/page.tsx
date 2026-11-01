@@ -2,33 +2,23 @@ import { Suspense } from 'react'
 import { getSupabase } from '../lib/supabase'
 import { Star } from 'lucide-react'
 import AddToCartButton from '../components/AddToCartButton'
+import Hero from '../components/Hero' // استدعاء البنر
+import Features from '../components/Features' // استدعاء المميزات
 
-// 1. مكون منفصل لجلب وعرض المنتجات من الداتابيز
 async function ProductsList() {
   const supabase = getSupabase(); 
-
-  // سحب البيانات من Supabase
   const { data: products, error } = await supabase.from('products').select('*')
 
-  if (error) {
-    return <div className="text-center text-red-500 p-10">حدث خطأ في جلب البيانات: {error.message}</div>
-  }
+  if (error) return <div className="text-center text-red-500 p-10">حدث خطأ في جلب البيانات: {error.message}</div>
+  if (!products || products.length === 0) return <p className="text-center text-gray-500 py-10">لا توجد منتجات في الداتابيز حالياً.</p>
 
-  if (!products || products.length === 0) {
-    return <p className="text-center text-gray-500 py-10">لا توجد منتجات في الداتابيز حالياً.</p>
-  }
-
-  // صورة بديلة في حالة عدم وجود صورة للمنتج
   const fallbackImage = "https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80";
 
   return (
-    // التعديل هنا: grid-cols-2 في الموبايل، gap-3 (مسافات أقل)، و px-3
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 px-3 md:px-10 py-6 md:py-10 container mx-auto">
       {products.map((product: any) => (
         <div key={product.id} className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
           
-          {/* صورة المنتج */}
-          {/* التعديل هنا: h-40 في الموبايل عشان ميبقاش طويل، و h-64 في الكمبيوتر */}
           <div className="relative h-40 md:h-64 bg-gray-50 flex items-center justify-center p-2 md:p-4 w-full overflow-hidden">
             <span className="absolute top-2 right-2 md:top-4 md:right-4 bg-[#8A3324] text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full z-10">
               جديد
@@ -40,10 +30,8 @@ async function ProductsList() {
             />
           </div>
 
-          {/* تفاصيل المنتج */}
           <div className="p-3 md:p-5 text-center flex flex-col flex-grow justify-between">
             <div>
-              {/* النجوم */}
               <div className="flex justify-center gap-0.5 md:gap-1 text-yellow-400 mb-1 md:mb-3">
                 <Star className="w-3 h-3 md:w-4 md:h-4 fill-current" />
                 <Star className="w-3 h-3 md:w-4 md:h-4 fill-current" />
@@ -52,10 +40,8 @@ async function ProductsList() {
                 <Star className="w-3 h-3 md:w-4 md:h-4 fill-current text-gray-200" />
               </div>
               
-              {/* اسم المنتج */}
               <h3 className="text-sm md:text-lg font-bold text-gray-800 mb-1 md:mb-3 line-clamp-2 h-10 md:h-auto">{product.name}</h3>
               
-              {/* السعر */}
               <div className="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-2 mb-2 md:mb-5 mt-2">
                 <span className="text-base md:text-xl font-black text-[#8A3324]">{product.price} ج.م</span>
                 {product.old_price && (
@@ -64,7 +50,6 @@ async function ProductsList() {
               </div>
             </div>
 
-            {/* زرار إضافة للسلة (مكون منفصل) */}
             <div className="mt-auto">
               <AddToCartButton product={product} />
             </div>
@@ -75,20 +60,24 @@ async function ProductsList() {
   )
 }
 
-// 2. الصفحة الرئيسية
 export default function Home() {
   return (
-    <main className="pb-20">
-      {/* عنوان القسم */}
-      <div className="text-center mt-8 md:mt-12 mb-6 md:mb-8">
+    <main className="pb-20 bg-[#FAFAFA]">
+      {/* البنر الرئيسي */}
+      <Hero />
+      
+      {/* المميزات */}
+      <Features />
+
+      {/* عنوان المنتجات */}
+      <div id="products" className="text-center mt-8 md:mt-12 mb-6 md:mb-8">
         <h2 className="text-2xl md:text-4xl font-black text-gray-900 inline-block relative">
           الأكثر <span className="text-[#8A3324]">مبيعاً</span>
-          {/* الخط اللي تحت الكلمة */}
           <span className="absolute -bottom-2 md:-bottom-3 left-0 w-full h-1 bg-[#D4A373] rounded-full"></span>
         </h2>
       </div>
 
-      {/* قائمة المنتجات مع Suspense */}
+      {/* شبكة المنتجات */}
       <Suspense fallback={<div className="text-center py-20 text-gray-500 text-lg">جاري تحميل المنتجات...</div>}>
         <ProductsList />
       </Suspense>

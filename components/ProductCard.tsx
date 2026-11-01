@@ -1,3 +1,4 @@
+"use client";
 import Link from 'next/link';
 import { Star, Plus } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';

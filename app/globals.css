@@ -1,24 +1,54 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FDFBF7; /* لون بيج دافي وفخم بدل الأبيض */
-  --foreground: #1A120B; /* لون بني غامق جداً للنصوص */
+  /* ألوان دافية وفخمة (Off-White & Espresso) */
+  --background: #FDFBF7; 
+  --foreground: #1A120B; 
 }
 
+/* إعدادات أساسية للجسم */
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-cairo), sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* تحسين شكل الـ Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D4A373; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #8A3324; }
+html {
+  scroll-behavior: smooth;
+}
 
-/* تحديد النص بلون البراند */
-::selection { background: #8A3324; color: white; }
+/* تخصيص شكل شريط التمرير (Scrollbar) */
+::-webkit-scrollbar { 
+  width: 8px; 
+  height: 8px;
+}
+::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb { 
+  background: #D4A373; 
+  border-radius: 10px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: #8A3324; 
+}
 
-html { scroll-behavior: smooth; }
+/* تخصيص لون تحديد النص */
+::selection { 
+  background: #8A3324; 
+  color: white; 
+}
+
+/* =========================================
+   كلاس سحري لإخفاء شريط التمرير من السلايدرات
+   عشان يبان كأنه تطبيق موبايل
+   ========================================= */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

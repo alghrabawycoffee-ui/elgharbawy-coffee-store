@@ -46,8 +46,6 @@ export const useCartStore = create<CartStore>()(
       })),
       clearCart: () => set({ items: [] }),
     }),
-    {
-      name: 'elgharbawy-cart', // اسم المتغير اللي هيحفظ في المتصفح
-    }
+    { name: 'elgharbawy-cart' }
   )
 );

@@ -8,7 +8,6 @@ export default function AddToCartButton({ product }: { product: any }) {
 
   const handleAdd = () => {
     addToCart(product);
-    // إظهار إشعار النجاح
     toast.success(`تم إضافة ${product.name} للسلة! 🛒`);
   };
 

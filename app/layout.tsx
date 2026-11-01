@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
-import { Toaster } from 'react-hot-toast'; // استدعاء الإشعارات
+import { Toaster } from 'react-hot-toast';
 
 const cairo = Cairo({ 
   subsets: ["arabic"],
@@ -24,22 +24,14 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={`${cairo.variable} antialiased bg-[#FAFAFA] flex flex-col min-h-screen`}>
-        
-        {/* إعدادات الإشعارات */}
-        <Toaster 
-          position="bottom-center" 
-          toastOptions={{
-            style: { fontFamily: 'var(--font-cairo)', direction: 'rtl' },
-            success: { iconTheme: { primary: '#8A3324', secondary: '#fff' } }
-          }} 
-        />
-        
+        <Toaster position="bottom-center" toastOptions={{
+          style: { fontFamily: 'var(--font-cairo)', direction: 'rtl' },
+          success: { iconTheme: { primary: '#8A3324', secondary: '#fff' } }
+        }} />
         <Header /> 
-        
         <main className="flex-grow">
           {children}
         </main>
-        
         <Footer />
       </body>
     </html>
